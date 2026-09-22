@@ -62,18 +62,18 @@ export const content = {
   id: {
     nav: {
       manifesto: "Manifesto",
-      film: "Film",
+      film: "Film Kampanye",
       test: "Tes Refleksi",
       team: "Tim",
       cta: "Mulai Tes",
     },
     hero: {
-      overline: "LIDM 2026 · Divisi Video Digital Pendidikan",
-      lines: ["Suara yang tak terdengar", "di balik kata", "\u201Claki-laki harus kuat\u201D."],
+      overline: "Platform Refleksi Keluarga · LIDM 2026",
+      lines: ["Setiap keluarga", "berhak punya ruang", "untuk bicara."],
       subtitle:
-        "Rafa, 17 tahun, melukis perasaannya karena tak pernah diajari cara mengucapkannya. Project Ruang menghadirkan ruang aman bagi ayah dan anak untuk kembali berbicara — karena mendengar adalah bentuk cinta tertinggi.",
+        "Ruang adalah tes refleksi 12 pertanyaan untuk orang tua dan anak laki-laki — disusun dari teori psikologi IPARTheory, sepenuhnya anonim, dan hasilnya siap didiskusikan bersama psikolog. Karena mendengar adalah bentuk cinta tertinggi.",
       ctaPrimary: "Mulai Tes Refleksi",
-      ctaSecondary: "Tonton Film",
+      ctaSecondary: "Kenapa Ruang Ada",
       scroll: "gulir untuk menjelajah",
       imageAlt: "Kehangatan ayah dan anak",
     },
@@ -100,17 +100,46 @@ export const content = {
         {
           num: "03",
           title: "Sebuah ruang untuk bertemu.",
-          body: "Project Ruang memadukan film sinematik 15 adegan dan tes refleksi digital berbasis psikologi (IPARTheory). Dari layar ke hati, dari hati ke meja makan — sebuah perjalanan: menonton, berefleksi, berdialog, lalu bertindak.",
+          body: "Ruang lahir sebagai jawaban: instrumen refleksi digital yang mempertemukan ayah dan anak. Film sinematik 15 adegan menjadi pintu kampanyenya — tes refleksinya adalah jembatan perubahannya.",
           stats: [
-            { value: "15", label: "adegan sinematik pemicu empati" },
             { value: "12", label: "pertanyaan refleksi berbasis IPARTheory" },
+            { value: "2", label: "mode: orang tua & anak laki-laki" },
           ],
           image: "https://images.pexels.com/photos/8298201/pexels-photo-8298201.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
         },
       ],
     },
+    pro: {
+      overline: "Dikelola Bersama Psikolog",
+      title: "Tes yang terkelola, bukan sekadar kuis.",
+      desc: "Ruang dirancang sebagai instrumen refleksi yang bertanggung jawab — dari dasar teori, etika data, hingga rujukan profesional.",
+      steps: [
+        {
+          num: "01",
+          title: "Berbasis teori",
+          body: "Disusun dari Interpersonal Acceptance-Rejection Theory (IPARTheory) — empat dimensi penerimaan dan penolakan orang tua yang diakui secara akademis.",
+        },
+        {
+          num: "02",
+          title: "Anonim & beretika",
+          body: "Tanpa nama, tanpa akun, tanpa pelacakan. Jawaban hanya tersimpan sebagai data agregat — tak satu pun bisa dilacak ke individu.",
+        },
+        {
+          num: "03",
+          title: "Validasi berkelanjutan",
+          body: "Setiap jawaban memperkuat validasi psikometri instrumen — terpantau transparan di dashboard validasi yang terbuka.",
+        },
+        {
+          num: "04",
+          title: "Rujukan profesional",
+          body: "Hasil dapat diunduh atau dikirim ke email untuk dibawa ke psikolog atau konselor — jembatan menuju bantuan profesional, bukan penggantinya.",
+        },
+      ],
+      ctaDash: "Lihat Dashboard Validasi",
+      ctaModule: "Buka Modul Dialog 7 Hari",
+    },
     film: {
-      overline: "Film Sinematik · 15 Adegan",
+      overline: "Materi Kampanye · Film 15 Adegan",
       title: "Ketika sebuah gambar bersuara.",
       synopsis:
         "Rafa (17) menuangkan emosinya ke atas kertas gambar karena tekanan maskulinitas merampas ruang bicaranya. Hingga sang ayah menemukan Project Ruang — dan perlahan memahami bahwa mendengarkan adalah dukungan terbesar yang bisa ia berikan kepada putranya.",
@@ -118,12 +147,15 @@ export const content = {
         "\u201CKetika tekanan maskulinitas merampas ruang seorang remaja untuk didengar, sebuah platform digital bernama Project Ruang menjadi katalis perubahan.\u201D",
       chips: ["Video Digital Pendidikan", "LIDM 2026", "Storytelling Interaktif"],
       note: "Film lengkap tersedia di YouTube",
+      note2: "Film ini materi kampanye untuk memantik kesadaran — inti platformnya adalah Tes Refleksi di atas.",
     },
     test: {
       overline: "Tes Refleksi",
       title: "Seberapa terbuka ruang di rumah Anda?",
       desc: "12 pertanyaan reflektif berbasis Interpersonal Acceptance-Rejection Theory (IPARTheory). Bukan diagnosis klinis — melainkan cermin jujur untuk memulai percakapan dengan anak Anda.",
       descSon: "12 pertanyaan jujur tentang bagaimana rasanya menjadi kamu di rumah. Tidak ada jawaban benar atau salah — hanya perasaanmu yang berhak didengar.",
+      chips: ["12 pertanyaan", "\u00B13 menit", "100% anonim", "Bukan diagnosis"],
+      consent: "Dengan memulai, Anda setuju jawaban disimpan secara anonim sebagai data agregat untuk validasi instrumen.",
       modes: { parent: "Orang Tua", son: "Anak Laki-Laki" },
       modeIntroParent: "Saya menjawab sebagai orang tua",
       modeIntroSon: "Saya menjawab sebagai anak",
@@ -175,7 +207,7 @@ export const content = {
           advice: [
             "Minggu ini, dengarkan satu ceritanya sampai selesai tanpa menasihati",
             "Hentikan satu kalimat pembanding (\u201Canak orang lain\u2026\u201D)",
-            "Tonton film Project Ruang bersama, lalu tanyakan pendapatnya",
+            "Tonton film kampanye Project Ruang bersama, lalu tanyakan pendapatnya",
           ],
         },
         silent: {
@@ -204,7 +236,7 @@ export const content = {
           advice: [
             "Mulai dari hal kecil: ceritakan satu kejadian hari ini",
             "Tulis atau gambar perasaanmu jika sulit diucapkan",
-            "Ajak ayah atau ibumu menonton film Project Ruang bersama",
+            "Ajak ayah atau ibumu menonton film kampanye Project Ruang bersama",
           ],
         },
         silent: {
@@ -224,7 +256,7 @@ export const content = {
       disclaimerSon:
         "Tes ini adalah alat refleksi dan edukasi — bukan diagnosis klinis. Jika perasaanmu terasa sangat berat, bicaralah dengan orang dewasa tepercaya atau hubungi layanan kesehatan jiwa terdekat.",
       retake: "Ulangi Tes",
-      watchFilm: "Tonton Filmnya",
+      watchFilm: "Lihat Film Kampanye",
       share: "Unduh Kartu Hasil",
       sharing: "Menyiapkan kartu\u2026",
     },
@@ -295,18 +327,18 @@ export const content = {
   en: {
     nav: {
       manifesto: "Manifesto",
-      film: "Film",
+      film: "Campaign Film",
       test: "Reflection Test",
       team: "Team",
       cta: "Take the Test",
     },
     hero: {
-      overline: "LIDM 2026 · Educational Digital Video Division",
-      lines: ["The voices that go", "unheard behind", "\u201Cboys must be strong\u201D."],
+      overline: "Family Reflection Platform · LIDM 2026",
+      lines: ["Every family", "deserves a space", "to talk."],
       subtitle:
-        "Rafa, 17, paints what he feels because he was never taught how to say it. Project Ruang creates a safe space for fathers and sons to talk again — because listening is the highest form of love.",
+        "Ruang is a 12-question reflection test for parents and sons — built on IPARTheory psychology, fully anonymous, and ready to discuss with a psychologist. Because listening is the highest form of love.",
       ctaPrimary: "Start the Reflection Test",
-      ctaSecondary: "Watch the Film",
+      ctaSecondary: "Why Ruang Exists",
       scroll: "scroll to explore",
       imageAlt: "A warm father and son moment",
     },
@@ -333,17 +365,46 @@ export const content = {
         {
           num: "03",
           title: "A space to meet.",
-          body: "Project Ruang combines a 15-scene cinematic film with a psychology-based digital reflection test (IPARTheory). From screen to heart, from heart to the dinner table — a journey: watch, reflect, dialogue, act.",
+          body: "Ruang was born as the answer: a digital reflection instrument that brings fathers and sons together. The 15-scene film is its campaign door — the reflection test is its bridge to change.",
           stats: [
-            { value: "15", label: "cinematic empathy-trigger scenes" },
             { value: "12", label: "IPARTheory-based reflection questions" },
+            { value: "2", label: "modes: parents & sons" },
           ],
           image: "https://images.pexels.com/photos/8298201/pexels-photo-8298201.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
         },
       ],
     },
+    pro: {
+      overline: "Managed with Psychologists",
+      title: "A governed instrument, not just a quiz.",
+      desc: "Ruang is designed as a responsible reflection instrument — from theoretical grounding and data ethics to professional referral.",
+      steps: [
+        {
+          num: "01",
+          title: "Theory-grounded",
+          body: "Built on the Interpersonal Acceptance-Rejection Theory (IPARTheory) — four academically recognized dimensions of parental acceptance and rejection.",
+        },
+        {
+          num: "02",
+          title: "Anonymous & ethical",
+          body: "No names, no accounts, no tracking. Answers are stored only as aggregate data — none can be traced back to an individual.",
+        },
+        {
+          num: "03",
+          title: "Continuous validation",
+          body: "Every answer strengthens the instrument's psychometric validation — transparently monitored on the open validation dashboard.",
+        },
+        {
+          num: "04",
+          title: "Professional referral",
+          body: "Results can be downloaded or emailed to bring to a psychologist or counselor — a bridge toward professional help, never a replacement.",
+        },
+      ],
+      ctaDash: "Open the Validation Dashboard",
+      ctaModule: "Open the 7-Day Dialogue Module",
+    },
     film: {
-      overline: "Cinematic Film · 15 Scenes",
+      overline: "Campaign Material · 15-Scene Film",
       title: "When a drawing speaks.",
       synopsis:
         "Rafa (17) pours his emotions onto drawing paper because masculinity pressure has stolen his space to speak. Until his father discovers Project Ruang — and slowly understands that listening is the greatest support he can offer his son.",
@@ -351,12 +412,15 @@ export const content = {
         "\u201CWhen masculinity pressure robs a teenage boy of his space to be heard, a digital platform called Project Ruang becomes the catalyst for change.\u201D",
       chips: ["Educational Digital Video", "LIDM 2026", "Interactive Storytelling"],
       note: "Full film available on YouTube",
+      note2: "This film is a campaign piece to spark awareness — the heart of the platform is the Reflection Test above.",
     },
     test: {
       overline: "The Reflection Test",
       title: "How open is the space in your home?",
       desc: "12 reflective questions grounded in the Interpersonal Acceptance-Rejection Theory (IPARTheory). Not a clinical diagnosis — an honest mirror to start a conversation with your child.",
       descSon: "12 honest questions about what it feels like to be you at home. There are no right or wrong answers — only your feelings, which deserve to be heard.",
+      chips: ["12 questions", "~3 minutes", "100% anonymous", "Not a diagnosis"],
+      consent: "By starting, you agree your answers are stored anonymously as aggregate data for instrument validation.",
       modes: { parent: "Parent", son: "Son" },
       modeIntroParent: "I am answering as a parent",
       modeIntroSon: "I am answering as a son",
@@ -408,7 +472,7 @@ export const content = {
           advice: [
             "This week, listen to one of his stories to the end without lecturing",
             "Drop one comparing sentence (\u201Cother kids\u2026\u201D) from your vocabulary",
-            "Watch the Project Ruang film together, then ask what he thinks",
+            "Watch the Project Ruang campaign film together, then ask what he thinks",
           ],
         },
         silent: {
@@ -437,7 +501,7 @@ export const content = {
           advice: [
             "Start small: share one thing that happened today",
             "Write or draw your feelings if they are hard to say out loud",
-            "Invite your dad or mom to watch the Project Ruang film together",
+            "Invite your dad or mom to watch the Project Ruang campaign film together",
           ],
         },
         silent: {
@@ -457,7 +521,7 @@ export const content = {
       disclaimerSon:
         "This test is a reflective and educational tool — not a clinical diagnosis. If your feelings ever feel too heavy, talk to a trusted adult or reach out to a nearby mental health service.",
       retake: "Retake the Test",
-      watchFilm: "Watch the Film",
+      watchFilm: "See the Campaign Film",
       share: "Download Result Card",
       sharing: "Preparing card\u2026",
     },

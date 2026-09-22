@@ -10,6 +10,7 @@ import { Manifesto } from "@/components/Manifesto";
 import { VideoSection } from "@/components/VideoSection";
 import { Gallery } from "@/components/Gallery";
 import { ReflectionTest } from "@/components/ReflectionTest";
+import { ProSection } from "@/components/ProSection";
 import { QRSection } from "@/components/QRSection";
 import { DialogTree } from "@/components/DialogTree";
 import { ForumSection } from "@/components/ForumSection";
@@ -37,6 +38,10 @@ const Landing = ({ t, lang, onToggleLang, scrollTo }) => {
         <section id="beranda">
           <Hero t={t} onNavigate={scrollTo} />
         </section>
+        <section id="tes">
+          <ReflectionTest t={t} lang={lang} onNavigate={scrollTo} />
+        </section>
+        <ProSection t={t} />
         <section id="manifesto">
           <Manifesto t={t} />
         </section>
@@ -45,9 +50,6 @@ const Landing = ({ t, lang, onToggleLang, scrollTo }) => {
         </section>
         <section id="galeri">
           <Gallery t={t} />
-        </section>
-        <section id="tes">
-          <ReflectionTest t={t} lang={lang} onNavigate={scrollTo} />
         </section>
         <QRSection t={t} />
         <DialogTree t={t} lang={lang} />

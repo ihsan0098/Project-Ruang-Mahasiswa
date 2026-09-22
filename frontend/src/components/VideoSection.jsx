@@ -36,6 +36,9 @@ export const VideoSection = ({ t }) => (
             </span>
           ))}
         </div>
+        <p className="mt-6 text-xs font-mono uppercase tracking-[0.15em] text-stone-500 leading-relaxed">
+          {t.film.note2}
+        </p>
       </motion.div>
 
       <motion.div

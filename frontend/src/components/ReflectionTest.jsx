@@ -178,7 +178,17 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
                   {t.test.countText(count)}
                 </p>
               )}
-              <div className="mt-10">
+              <div className="mt-8 flex flex-wrap gap-3">
+                {t.test.chips.map((chip) => (
+                  <span
+                    key={chip}
+                    className="px-4 py-1.5 rounded-full border border-stone-700/80 text-[11px] font-mono uppercase tracking-[0.15em] text-stone-400"
+                  >
+                    {chip}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-8">
                 <button
                   data-testid="start-reflection-btn"
                   onClick={() => setStage("quiz")}
@@ -186,6 +196,9 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
                 >
                   {t.test.start}
                 </button>
+                <p data-testid="test-consent-note" className="mt-4 text-xs font-light text-stone-500 leading-relaxed max-w-md">
+                  {t.test.consent}
+                </p>
               </div>
             </motion.div>
           )}
