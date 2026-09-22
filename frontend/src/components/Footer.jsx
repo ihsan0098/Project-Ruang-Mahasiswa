@@ -47,6 +47,13 @@ export const Footer = ({ t, onNavigate }) => {
                   {l.label}
                 </button>
               ))}
+              <a
+                data-testid="footer-link-validasi"
+                href="/validasi"
+                className="text-left text-sm font-light text-stone-400 hover:text-amber-300 transition-colors duration-300"
+              >
+                {t.footer.dashboard}
+              </a>
             </nav>
           </div>
         </div>

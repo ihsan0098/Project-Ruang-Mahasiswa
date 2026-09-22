@@ -73,6 +73,7 @@ class ReflectionResultCreate(BaseModel):
     rejection: float
     level: str
     locale: str = "id"
+    mode: str = "parent"
 
 @api_router.post("/reflection-results")
 async def create_reflection_result(input: ReflectionResultCreate):
@@ -83,8 +84,29 @@ async def create_reflection_result(input: ReflectionResultCreate):
 
 @api_router.get("/reflection-stats")
 async def get_reflection_stats():
-    count = await db.reflection_results.count_documents({})
-    return {"count": count}
+    docs = await db.reflection_results.find({}, {"_id": 0}).to_list(10000)
+    dims = ["warmth", "hostility", "indifference", "rejection"]
+
+    def averages(subset):
+        if not subset:
+            return {d: 0 for d in dims}
+        return {d: round(sum(x.get(d, 0) for x in subset) / len(subset), 2) for d in dims}
+
+    parents = [d for d in docs if d.get("mode", "parent") == "parent"]
+    sons = [d for d in docs if d.get("mode") == "son"]
+    levels = {"warm": 0, "fading": 0, "silent": 0}
+    for d in docs:
+        lvl = d.get("level", "warm")
+        levels[lvl] = levels.get(lvl, 0) + 1
+
+    return {
+        "count": len(docs),
+        "levels": levels,
+        "averages": averages(docs),
+        "parentAverages": averages(parents),
+        "sonAverages": averages(sons),
+        "modes": {"parent": len(parents), "son": len(sons)},
+    }
 
 # Include the router in the main app
 app.include_router(api_router)

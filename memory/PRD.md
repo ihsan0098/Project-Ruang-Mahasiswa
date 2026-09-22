@@ -22,7 +22,15 @@ Sumber data: Proposal LIDM 2026 Divisi Video Digital Pendidikan (Project Ruang) 
 - Backend: FastAPI `/api/reflection-results` (POST, simpan hasil anonim) + `/api/reflection-stats` (GET, jumlah partisipan)
 - DB: MongoDB koleksi `reflection_results` (warmth/hostility/indifference/rejection/level/locale/timestamp)
 
-## Implemented (2026-09-22)
+## Implemented (2026-09-22, iterasi 2)
+- Mode ganda Tes Refleksi: Orang Tua & Anak Laki-Laki (12 pertanyaan cermin per mode, hasil & saran disesuaikan per peran)
+- Kartu Hasil Dibagikan: unduh PNG 1080×1350 (canvas, font Cormorant/Outfit/JetBrains Mono) langsung dari layar hasil
+- Dashboard Validasi di /validasi: total responden, split Orang Tua vs Anak, distribusi tingkat koneksi, grafik batang rerata 4 dimensi IPARTheory per mode (recharts), tombol muat ulang
+- QR Code CTA (qrcode.react) untuk layar bioskop/webinar → mengarah ke /?to=tes (auto-scroll ke tes)
+- Instalasi Pohon Dialog: 5 daun interaktif berisi suara hati anak laki-laki
+- Backend: field `mode` pada hasil + endpoint /api/reflection-stats mengembalikan agregat (levels, averages, parentAverages, sonAverages, modes)
+
+## Implemented (2026-09-22, iterasi 1)
 - Hero kinetik: masked line-by-line reveal, parallax mouse + scroll, partikel cahaya ambient
 - Manifesto 3 bab bernomor dengan statistik besar dan foto ber-frame
 - Section film: iframe YouTube dengan frame teatral, sinopsis, logline, chips
@@ -34,14 +42,14 @@ Sumber data: Proposal LIDM 2026 Divisi Video Digital Pendidikan (Project Ruang) 
 - Judul & meta halaman diperbarui
 
 ## Verified
-- curl: POST /api/reflection-results → {"ok":true}; GET /api/reflection-stats → count bertambah
-- Screenshot e2e: hero, manifesto, kuis 12 pertanyaan → hasil "Ruang yang Sunyi", toggle EN, iframe YouTube, tim, footer
+- curl: POST /api/reflection-results (dengan mode) → {"ok":true}; GET /api/reflection-stats → agregat lengkap (levels, averages, parentAverages, sonAverages, modes)
+- Screenshot e2e: hero, manifesto, kuis 12 pertanyaan mode Orang Tua & Anak → hasil, unduh kartu PNG (terverifikasi visual), QR section, Pohon Dialog, toggle EN, iframe YouTube, tim, footer, dashboard /validasi
 
 ## Backlog
 - P0: (kosong — inti selesai)
-- P1: Grafik agregat hasil tes untuk halaman validasi psikometri; sertifikat/hasil yang bisa dibagikan (share card)
-- P2: Mode QR-code CTA seperti di film; blog/artikel edukasi; analytics dashboard tim
+- P1: Galeri Digital karya Rafa (seperti situs referensi); ekspor CSV data dashboard untuk laporan validasi
+- P2: Modul komunikasi Orang Tua & Anak yang bisa diunduh; forum/komunitas pengasuhan
 
 ## Next Tasks
-1. Shareable result card (PNG/OG image) agar hasil tes bisa dibagikan ke media sosial
-2. Dashboard statistik refleksi untuk kebutuhan validasi psikometri LIDM
+1. Galeri digital karya Rafa (tiga sketsa: Terbelenggu Ekspektasi, Suara yang Terkunci, Titik Balik)
+2. Ekspor CSV dari dashboard validasi untuk lampiran laporan LIDM

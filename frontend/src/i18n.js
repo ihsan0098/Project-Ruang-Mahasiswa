@@ -28,6 +28,36 @@ const questionsEn = [
   { dimension: "warmth", text: "I am ready to learn to understand the new emotional language shown by my child." },
 ];
 
+const sonQuestionsId = [
+  { dimension: "warmth", text: "Orang tua saya sering memeluk atau memuji saya ketika saya berhasil melakukan sesuatu." },
+  { dimension: "hostility", text: "Orang tua saya mudah membentak saya karena kesalahan kecil." },
+  { dimension: "indifference", text: "Orang tua saya tampak terlalu lelah untuk mendengarkan cerita keseharian saya." },
+  { dimension: "rejection", text: "Kadang saya merasa hanya menjadi beban bagi orang tua saya." },
+  { dimension: "warmth", text: "Orang tua saya meluangkan waktu khusus untuk mengobrol berdua dengan saya." },
+  { dimension: "hostility", text: "Saya dituntut untuk selalu kuat dan dilarang menangis." },
+  { dimension: "indifference", text: "Orang tua saya jarang tahu apa yang sedang saya rasakan atau gambar di kamar." },
+  { dimension: "rejection", text: "Saya merasa kasih sayang orang tua harus saya \u201Cperjuangkan\u201D lewat prestasi." },
+  { dimension: "warmth", text: "Ketika saya sedih, orang tua saya mendengarkan tanpa langsung menyalahkan atau menceramahi." },
+  { dimension: "hostility", text: "Saya sering dibandingkan dengan anak lain yang dianggap lebih hebat." },
+  { dimension: "indifference", text: "Perasaan saya sering dianggap berlebihan atau cari perhatian." },
+  { dimension: "warmth", text: "Saya merasa aman menceritakan apa pun kepada orang tua saya." },
+];
+
+const sonQuestionsEn = [
+  { dimension: "warmth", text: "My parents often hug or praise me when I accomplish something." },
+  { dimension: "hostility", text: "My parents easily yell at me over small mistakes." },
+  { dimension: "indifference", text: "My parents seem too exhausted to listen to my daily stories." },
+  { dimension: "rejection", text: "Sometimes I feel like I am just a burden to my parents." },
+  { dimension: "warmth", text: "My parents set aside special time just to talk with me." },
+  { dimension: "hostility", text: "I am demanded to always be strong and told not to cry." },
+  { dimension: "indifference", text: "My parents rarely know what I am feeling or drawing in my room." },
+  { dimension: "rejection", text: "I feel I have to \u201Cearn\u201D my parents' affection through achievements." },
+  { dimension: "warmth", text: "When I am sad, my parents listen without immediately blaming or lecturing me." },
+  { dimension: "hostility", text: "I am often compared to other kids who seem more successful." },
+  { dimension: "indifference", text: "My feelings are often dismissed as exaggeration or attention-seeking." },
+  { dimension: "warmth", text: "I feel safe telling my parents anything." },
+];
+
 export const content = {
   id: {
     nav: {
@@ -90,16 +120,21 @@ export const content = {
       note: "Film lengkap tersedia di YouTube",
     },
     test: {
-      overline: "Tes Refleksi Orang Tua",
+      overline: "Tes Refleksi",
       title: "Seberapa terbuka ruang di rumah Anda?",
       desc: "12 pertanyaan reflektif berbasis Interpersonal Acceptance-Rejection Theory (IPARTheory). Bukan diagnosis klinis — melainkan cermin jujur untuk memulai percakapan dengan anak Anda.",
+      descSon: "12 pertanyaan jujur tentang bagaimana rasanya menjadi kamu di rumah. Tidak ada jawaban benar atau salah — hanya perasaanmu yang berhak didengar.",
+      modes: { parent: "Orang Tua", son: "Anak Laki-Laki" },
+      modeIntroParent: "Saya menjawab sebagai orang tua",
+      modeIntroSon: "Saya menjawab sebagai anak",
       start: "Mulai Berefleksi",
-      countText: (n) => `${n} orang tua telah berefleksi di Ruang`,
+      countText: (n) => `${n} orang telah berefleksi di Ruang`,
       questionOf: (i) => `Pertanyaan ${i} dari 12`,
       back: "Kembali",
       scale: ["Tidak Pernah", "Jarang", "Sering", "Selalu"],
       questions: questionsId,
-      resultOverline: "Hasil Refleksi Anda",
+      sonQuestions: sonQuestionsId,
+      resultOverline: "Hasil Refleksi",
       dimensions: {
         warmth: "Kehangatan & Kasih Sayang",
         hostility: "Permusuhan & Agresi",
@@ -108,20 +143,20 @@ export const content = {
       },
       insights: {
         warmth: {
-          high: "Kehangatan Anda benar-benar dirasakan oleh anak.",
-          low: "Anak mungkin sedang merindukan pelukan dan pujian Anda.",
+          high: "Kehangatan benar-benar dirasakan.",
+          low: "Ada kerinduan akan pelukan dan pujian.",
         },
         hostility: {
-          high: "Bentakan dan tuntutan mungkin menutup cerita anak.",
-          low: "Anak relatif aman dari ledakan emosi Anda.",
+          high: "Bentakan dan tuntutan mungkin menutup cerita.",
+          low: "Relatif aman dari ledakan emosi.",
         },
         indifference: {
-          high: "Kesibukan mungkin membuat anak merasa tak terlihat.",
-          low: "Anda cukup hadir dalam kesehariannya.",
+          high: "Kesibukan mungkin membuat seseorang merasa tak terlihat.",
+          low: "Kehadiran cukup terasa dalam keseharian.",
         },
         rejection: {
-          high: "Anak mungkin merasa diterima hanya jika memenuhi harapan.",
-          low: "Anak merasa diterima apa adanya.",
+          high: "Ada rasa diterima hanya jika memenuhi harapan.",
+          low: "Ada rasa diterima apa adanya.",
         },
       },
       levels: {
@@ -153,11 +188,65 @@ export const content = {
           ],
         },
       },
+      sonLevels: {
+        warm: {
+          title: "Suaramu Terdengar",
+          desc: "Kabar baik: kamu merasa diterima dan aman di rumah. Itu hak setiap anak. Pertahankan percakapan ini — dan rawat ruang yang sudah ada.",
+          advice: [
+            "Terus biasakan bercerita, sekecil apa pun kejadiannya",
+            "Ucapkan terima kasih saat orang tuamu benar-benar mendengarkan",
+            "Jadilah pendengar yang baik juga bagi teman-temanmu",
+          ],
+        },
+        fading: {
+          title: "Ruang yang Meredup",
+          desc: "Kamu merasakan kehangatan, tapi juga jarak yang mulai tumbuh. Perasaanmu nyata dan layak diperjuangkan — satu percakapan kecil bisa mengubah banyak hal.",
+          advice: [
+            "Mulai dari hal kecil: ceritakan satu kejadian hari ini",
+            "Tulis atau gambar perasaanmu jika sulit diucapkan",
+            "Ajak ayah atau ibumu menonton film Project Ruang bersama",
+          ],
+        },
+        silent: {
+          title: "Kamu Tidak Sendirian",
+          desc: "Hasil ini menunjukkan kamu mungkin merasa tidak sepenuhnya didengar di rumah. Ketahuilah: ini bukan salahmu, dan perasaanmu valid.",
+          advice: [
+            "Perasaanmu valid — merasa sedih bukanlah kelemahan",
+            "Cari satu orang dewasa tepercaya: guru, konselor, atau kerabat",
+            "Menulis atau menggambar bisa menjadi jembatan sebelum bercerita",
+            "Jika terasa sangat berat, hubungi konselor sekolah atau layanan kesehatan jiwa",
+          ],
+        },
+      },
       adviceTitle: "Langkah kecil untuk malam ini",
       disclaimer:
         "Tes ini adalah alat refleksi dan edukasi berbasis konstruk psikologis — bukan diagnosis klinis. Jika Anda atau anak Anda membutuhkan bantuan, hubungi psikolog profesional atau layanan kesehatan jiwa terdekat.",
+      disclaimerSon:
+        "Tes ini adalah alat refleksi dan edukasi — bukan diagnosis klinis. Jika perasaanmu terasa sangat berat, bicaralah dengan orang dewasa tepercaya atau hubungi layanan kesehatan jiwa terdekat.",
       retake: "Ulangi Tes",
       watchFilm: "Tonton Filmnya",
+      share: "Unduh Kartu Hasil",
+      sharing: "Menyiapkan kartu\u2026",
+    },
+    qr: {
+      overline: "Untuk Layar Bioskop & Webinar",
+      title: "Pindai. Mulai percakapannya.",
+      desc: "Tampilkan kode ini di layar saat pemutaran film atau presentasi — penonton dapat langsung memindainya dan mengikuti Tes Refleksi dari ponsel mereka, saat itu juga.",
+      hint: "Mengarah ke halaman ini, langsung ke bagian tes",
+    },
+    tree: {
+      overline: "Instalasi Pohon Dialog",
+      title: "Suara-suara yang terpendam.",
+      prompt: "Sentuh salah satu daun untuk mendengar apa yang sering tak sempat dikatakan anak laki-laki.",
+      hint: "Klik salah satu daun untuk memunculkan suara hati anak\u2026",
+      leafLabel: "Daun",
+      leaves: [
+        "\u201CAku tidak butuh dinasihati. Aku hanya ingin didengar.\u201D",
+        "\u201CAku menangis bukan karena lemah. Aku menangis karena akhirnya merasa aman.\u201D",
+        "\u201CGambar-gambarku adalah surat yang tak pernah berani kuberikan.\u201D",
+        "\u201CAyah, aku lebih takut mengecewakanmu daripada menghadapi dunia.\u201D",
+        "\u201CSekali saja, tanyakan 'kamu baik-baik saja?' tanpa menunggu aku berbuat salah.\u201D",
+      ],
     },
     marquee: [
       "Mendengar adalah bentuk cinta tertinggi",
@@ -179,11 +268,27 @@ export const content = {
       ],
       advisor: { name: "Dr. Lailatur Rahmi, S.Pd, M.Pd", focus: "Bimbingan Akademik & Media Pendidikan" },
     },
+    dash: {
+      overline: "Dashboard Validasi",
+      title: "Data Refleksi Teragregasi.",
+      desc: "Rekap anonim seluruh jawaban Tes Refleksi — bahan pendukung validasi psikometri Project Ruang untuk LIDM 2026.",
+      total: "Total Responden",
+      parent: "Orang Tua",
+      son: "Anak Laki-Laki",
+      levelsTitle: "Distribusi Tingkat Koneksi",
+      dimsTitle: "Rerata per Dimensi IPARTheory",
+      dimsNote: "Skala 1\u20134 · dibandingkan antara orang tua dan anak",
+      refresh: "Muat Ulang Data",
+      back: "Kembali ke Beranda",
+      empty: "Belum ada data — jadilah yang pertama mengikuti tes di halaman utama.",
+      levelNames: { warm: "Ruang Hangat", fading: "Ruang Samar", silent: "Ruang Sunyi" },
+    },
     footer: {
       tagline: "Ruang untuk setiap suara yang belum sempat didengar.",
       lidmLine: "Lomba Inovasi Digital Mahasiswa 2026 · Divisi Video Digital Pendidikan",
       theme: "\u201CLiterasi Digital Terbina, Talenta Indonesia Berdampak Nyata\u201D",
       explore: "Jelajahi",
+      dashboard: "Dashboard Validasi",
       copy: "\u00A9 2026 Project Ruang. Untuk generasi yang berani merasa.",
     },
   },
@@ -248,16 +353,21 @@ export const content = {
       note: "Full film available on YouTube",
     },
     test: {
-      overline: "The Parent Reflection Test",
+      overline: "The Reflection Test",
       title: "How open is the space in your home?",
       desc: "12 reflective questions grounded in the Interpersonal Acceptance-Rejection Theory (IPARTheory). Not a clinical diagnosis — an honest mirror to start a conversation with your child.",
+      descSon: "12 honest questions about what it feels like to be you at home. There are no right or wrong answers — only your feelings, which deserve to be heard.",
+      modes: { parent: "Parent", son: "Son" },
+      modeIntroParent: "I am answering as a parent",
+      modeIntroSon: "I am answering as a son",
       start: "Begin Reflecting",
-      countText: (n) => `${n} parents have reflected in Ruang`,
+      countText: (n) => `${n} people have reflected in Ruang`,
       questionOf: (i) => `Question ${i} of 12`,
       back: "Back",
       scale: ["Never", "Rarely", "Often", "Almost Always"],
       questions: questionsEn,
-      resultOverline: "Your Reflection Result",
+      sonQuestions: sonQuestionsEn,
+      resultOverline: "Reflection Result",
       dimensions: {
         warmth: "Warmth & Affection",
         hostility: "Hostility & Aggression",
@@ -266,20 +376,20 @@ export const content = {
       },
       insights: {
         warmth: {
-          high: "Your warmth is genuinely felt by your child.",
-          low: "Your child may be missing your hugs and praise.",
+          high: "Warmth is genuinely felt.",
+          low: "There is a longing for hugs and praise.",
         },
         hostility: {
-          high: "Anger and demands may be closing your child's stories.",
-          low: "Your child is relatively safe from emotional outbursts.",
+          high: "Anger and demands may be closing the conversation.",
+          low: "Relatively safe from emotional outbursts.",
         },
         indifference: {
-          high: "Busyness may be making your child feel invisible.",
-          low: "You are fairly present in his daily life.",
+          high: "Busyness may be making someone feel invisible.",
+          low: "Presence is fairly felt in daily life.",
         },
         rejection: {
-          high: "Your child may feel accepted only when meeting expectations.",
-          low: "Your child feels accepted as he is.",
+          high: "There is a sense of being accepted only when meeting expectations.",
+          low: "There is a sense of being accepted as-is.",
         },
       },
       levels: {
@@ -311,11 +421,65 @@ export const content = {
           ],
         },
       },
+      sonLevels: {
+        warm: {
+          title: "Your Voice Is Heard",
+          desc: "Good news: you feel accepted and safe at home. That is every child's right. Keep this conversation alive — and care for the space that already exists.",
+          advice: [
+            "Keep sharing, no matter how small the story",
+            "Say thank you when your parents truly listen",
+            "Be a good listener for your friends too",
+          ],
+        },
+        fading: {
+          title: "A Dimming Space",
+          desc: "You feel warmth, but also a distance that is quietly growing. Your feelings are real and worth fighting for — one small conversation can change a lot.",
+          advice: [
+            "Start small: share one thing that happened today",
+            "Write or draw your feelings if they are hard to say out loud",
+            "Invite your dad or mom to watch the Project Ruang film together",
+          ],
+        },
+        silent: {
+          title: "You Are Not Alone",
+          desc: "Your answers suggest you may not feel fully heard at home right now. Know this: it is not your fault, and your feelings are valid.",
+          advice: [
+            "Your feelings are valid — feeling sad is not weakness",
+            "Find one trusted adult: a teacher, counselor, or relative",
+            "Writing or drawing can be a bridge before you speak",
+            "If it ever feels too heavy, reach out to a school counselor or a mental health hotline",
+          ],
+        },
+      },
       adviceTitle: "Small steps for tonight",
       disclaimer:
         "This test is a reflective and educational tool based on psychological constructs — not a clinical diagnosis. If you or your child needs help, please reach out to a professional psychologist or a nearby mental health service.",
+      disclaimerSon:
+        "This test is a reflective and educational tool — not a clinical diagnosis. If your feelings ever feel too heavy, talk to a trusted adult or reach out to a nearby mental health service.",
       retake: "Retake the Test",
       watchFilm: "Watch the Film",
+      share: "Download Result Card",
+      sharing: "Preparing card\u2026",
+    },
+    qr: {
+      overline: "For Cinema Screens & Webinars",
+      title: "Scan. Start the conversation.",
+      desc: "Show this code on screen during a screening or presentation — the audience can scan it instantly and take the Reflection Test from their phones, right then and there.",
+      hint: "Points to this page, straight to the test",
+    },
+    tree: {
+      overline: "The Dialogue Tree Installation",
+      title: "The voices kept inside.",
+      prompt: "Touch a leaf to hear what sons so often never get to say.",
+      hint: "Click a leaf to reveal a son's inner voice\u2026",
+      leafLabel: "Leaf",
+      leaves: [
+        "\u201CI don't need advice. I just want to be heard.\u201D",
+        "\u201CI cry not because I'm weak. I cry because I finally feel safe.\u201D",
+        "\u201CMy drawings are letters I never dared to hand over.\u201D",
+        "\u201CDad, I'm more afraid of disappointing you than of facing the world.\u201D",
+        "\u201CJust once, ask 'are you okay?' without waiting for me to mess up.\u201D",
+      ],
     },
     marquee: [
       "Listening is the highest form of love",
@@ -337,11 +501,27 @@ export const content = {
       ],
       advisor: { name: "Dr. Lailatur Rahmi, S.Pd, M.Pd", focus: "Academic Guidance & Educational Media" },
     },
+    dash: {
+      overline: "Validation Dashboard",
+      title: "Aggregated Reflection Data.",
+      desc: "An anonymous recap of every Reflection Test answer — supporting evidence for the psychometric validation of Project Ruang at LIDM 2026.",
+      total: "Total Respondents",
+      parent: "Parents",
+      son: "Sons",
+      levelsTitle: "Connection Level Distribution",
+      dimsTitle: "IPARTheory Dimension Averages",
+      dimsNote: "Scale 1\u20134 · comparing parents and sons",
+      refresh: "Reload Data",
+      back: "Back to Home",
+      empty: "No data yet — be the first to take the test on the main page.",
+      levelNames: { warm: "Warm Space", fading: "Fading Space", silent: "Silent Room" },
+    },
     footer: {
       tagline: "A space for every voice yet to be heard.",
       lidmLine: "Student Digital Innovation Competition (LIDM) 2026 · Educational Digital Video Division",
       theme: "\u201CLiterasi Digital Terbina, Talenta Indonesia Berdampak Nyata\u201D",
       explore: "Explore",
+      dashboard: "Validation Dashboard",
       copy: "\u00A9 2026 Project Ruang. For a generation brave enough to feel.",
     },
   },

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
-import { ArrowLeft, RotateCcw, Sparkle, Users } from "lucide-react";
+import { ArrowLeft, RotateCcw, Sparkle, Users, Download, UserRound, Sprout } from "lucide-react";
+import { downloadResultCard } from "@/utils/shareCard";
 
 const EASE = [0.16, 1, 0.3, 1];
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -10,11 +11,13 @@ const DIM_ORDER = ["warmth", "hostility", "indifference", "rejection"];
 const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
 
 export const ReflectionTest = ({ t, lang, onNavigate }) => {
+  const [mode, setMode] = useState("parent");
   const [stage, setStage] = useState("intro");
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState(Array(12).fill(null));
   const [result, setResult] = useState(null);
   const [count, setCount] = useState(null);
+  const [downloading, setDownloading] = useState(false);
   const advancing = useRef(false);
 
   useEffect(() => {
@@ -24,7 +27,8 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
       .catch(() => {});
   }, []);
 
-  const questions = t.test.questions;
+  const questions = mode === "son" ? t.test.sonQuestions : t.test.questions;
+  const levelCopy = mode === "son" ? t.test.sonLevels : t.test.levels;
 
   const finish = (ans) => {
     const groups = { warmth: [], hostility: [], indifference: [], rejection: [] };
@@ -41,7 +45,7 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
     setResult({ ...scores, level });
     setStage("result");
     axios
-      .post(`${API}/reflection-results`, { ...scores, level, locale: lang })
+      .post(`${API}/reflection-results`, { ...scores, level, locale: lang, mode })
       .catch(() => {});
   };
 
@@ -68,7 +72,17 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
     setAnswers(Array(12).fill(null));
     setIndex(0);
     setResult(null);
+    advancing.current = false;
     setStage("intro");
+  };
+
+  const onDownload = async () => {
+    if (!result || downloading) return;
+    setDownloading(true);
+    try {
+      await downloadResultCard({ t, mode, level: result.level, scores: result });
+    } catch (e) {}
+    setDownloading(false);
   };
 
   const levelStyles = {
@@ -98,9 +112,41 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-stone-100 leading-tight">
                 {t.test.title}
               </h2>
-              <p className="mt-6 text-base sm:text-lg font-light text-stone-300 leading-relaxed max-w-2xl">
-                {t.test.desc}
-              </p>
+
+              <div className="mt-8 inline-flex rounded-full border border-stone-700/80 p-1 bg-surface/60">
+                {[
+                  { id: "parent", icon: UserRound, testid: "mode-parent-btn" },
+                  { id: "son", icon: Sprout, testid: "mode-son-btn" },
+                ].map((m) => (
+                  <button
+                    key={m.id}
+                    data-testid={m.testid}
+                    onClick={() => setMode(m.id)}
+                    className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition-[background-color,color,box-shadow] duration-300 ${
+                      mode === m.id
+                        ? "bg-amber-500 text-stone-950 shadow-[0_0_24px_rgba(245,158,11,0.3)]"
+                        : "text-stone-400 hover:text-amber-300"
+                    }`}
+                  >
+                    <m.icon size={15} />
+                    {t.test.modes[m.id]}
+                  </button>
+                ))}
+              </div>
+
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={mode}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.4, ease: EASE }}
+                  className="mt-6 text-base sm:text-lg font-light text-stone-300 leading-relaxed max-w-2xl"
+                >
+                  {mode === "son" ? t.test.descSon : t.test.desc}
+                </motion.p>
+              </AnimatePresence>
+
               {count !== null && count > 0 && (
                 <p className="mt-5 inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.15em] text-stone-500">
                   <Users size={13} className="text-amber-500/70" />
@@ -129,12 +175,12 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
               transition={{ duration: 0.5, ease: EASE }}
               className="rounded-3xl border border-amber-500/15 bg-surface/80 backdrop-blur-sm p-8 sm:p-12"
             >
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-4 gap-4">
                 <p className="text-xs font-mono uppercase tracking-[0.2em] text-stone-500">
                   {t.test.questionOf(index + 1)}
                 </p>
-                <p className="text-xs font-mono text-amber-400/70">
-                  {Math.round((index / 12) * 100)}%
+                <p className="text-xs font-mono text-amber-400/70 shrink-0">
+                  {t.test.modes[mode]} · {Math.round((index / 12) * 100)}%
                 </p>
               </div>
               <div className="h-1 rounded-full bg-stone-800 overflow-hidden mb-10">
@@ -147,7 +193,7 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
 
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={index}
+                  key={`${mode}-${index}`}
                   initial={{ opacity: 0, x: 44 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -44 }}
@@ -200,13 +246,13 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
               className="rounded-3xl border border-amber-500/15 bg-surface/80 backdrop-blur-sm p-8 sm:p-12"
             >
               <p className="text-xs uppercase tracking-[0.3em] font-mono text-amber-400/80 mb-4">
-                {t.test.resultOverline}
+                {t.test.resultOverline} · {t.test.modes[mode]}
               </p>
               <h3 className={`font-serif text-4xl sm:text-5xl font-semibold tracking-tight ${levelStyles[result.level]}`}>
-                {t.test.levels[result.level].title}
+                {levelCopy[result.level].title}
               </h3>
               <p className="mt-5 text-base sm:text-lg font-light text-stone-300 leading-relaxed">
-                {t.test.levels[result.level].desc}
+                {levelCopy[result.level].desc}
               </p>
 
               <div className="mt-10 space-y-6">
@@ -242,7 +288,7 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
                   {t.test.adviceTitle}
                 </p>
                 <ul className="space-y-3">
-                  {t.test.levels[result.level].advice.map((a) => (
+                  {levelCopy[result.level].advice.map((a) => (
                     <li key={a} className="flex items-start gap-3 text-sm sm:text-base font-light text-stone-200">
                       <Sparkle size={14} className="mt-1 text-amber-500 shrink-0" />
                       {a}
@@ -252,10 +298,19 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
               </div>
 
               <p className="mt-8 text-xs font-light text-stone-500 leading-relaxed border-t border-stone-800 pt-6">
-                {t.test.disclaimer}
+                {mode === "son" ? t.test.disclaimerSon : t.test.disclaimer}
               </p>
 
               <div className="mt-8 flex flex-wrap gap-4">
+                <button
+                  data-testid="download-card-btn"
+                  onClick={onDownload}
+                  disabled={downloading}
+                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-amber-500 text-stone-950 font-medium hover:bg-amber-400 hover:shadow-[0_0_32px_rgba(245,158,11,0.35)] disabled:opacity-60 transition-[background-color,box-shadow] duration-300"
+                >
+                  <Download size={14} className={downloading ? "animate-bounce" : ""} />
+                  {downloading ? t.test.sharing : t.test.share}
+                </button>
                 <button
                   data-testid="retake-test-btn"
                   onClick={reset}
@@ -267,7 +322,7 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
                 <button
                   data-testid="result-watch-film-btn"
                   onClick={() => onNavigate("film")}
-                  className="px-7 py-3.5 rounded-full bg-amber-500 text-stone-950 font-medium hover:bg-amber-400 hover:shadow-[0_0_32px_rgba(245,158,11,0.35)] transition-[background-color,box-shadow] duration-300"
+                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-stone-700 text-stone-200 hover:border-amber-500/60 hover:text-amber-300 transition-[border-color,color] duration-300"
                 >
                   {t.test.watchFilm}
                 </button>
