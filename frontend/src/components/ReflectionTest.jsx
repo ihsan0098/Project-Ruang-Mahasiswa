@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
-import { ArrowLeft, RotateCcw, Sparkle, Users, Download, UserRound, Sprout } from "lucide-react";
+import { ArrowLeft, RotateCcw, Sparkle, Users, Download, UserRound, Sprout, Mail } from "lucide-react";
 import { downloadResultCard } from "@/utils/shareCard";
 
 const EASE = [0.16, 1, 0.3, 1];
@@ -18,6 +18,9 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
   const [result, setResult] = useState(null);
   const [count, setCount] = useState(null);
   const [downloading, setDownloading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [emailState, setEmailState] = useState("idle");
+  const [resultId, setResultId] = useState(null);
   const advancing = useRef(false);
 
   useEffect(() => {
@@ -46,6 +49,7 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
     setStage("result");
     axios
       .post(`${API}/reflection-results`, { ...scores, level, locale: lang, mode })
+      .then((r) => setResultId(r.data.id))
       .catch(() => {});
   };
 
@@ -72,6 +76,9 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
     setAnswers(Array(12).fill(null));
     setIndex(0);
     setResult(null);
+    setResultId(null);
+    setEmail("");
+    setEmailState("idle");
     advancing.current = false;
     setStage("intro");
   };
@@ -83,6 +90,24 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
       await downloadResultCard({ t, mode, level: result.level, scores: result });
     } catch (e) {}
     setDownloading(false);
+  };
+
+  const sendEmail = async () => {
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      setEmailState("invalid");
+      return;
+    }
+    if (!resultId) {
+      setEmailState("error");
+      return;
+    }
+    setEmailState("sending");
+    try {
+      await axios.post(`${API}/reflection-results/${resultId}/email`, { email, locale: lang });
+      setEmailState("sent");
+    } catch {
+      setEmailState("error");
+    }
   };
 
   const levelStyles = {
@@ -364,6 +389,42 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
                 >
                   {t.test.watchFilm}
                 </button>
+              </div>
+
+              <div className="mt-6 rounded-2xl border border-stone-700/60 bg-ink/60 p-6">
+                <p className="text-xs font-light text-stone-400 leading-relaxed">
+                  {t.resultEmail.label}
+                </p>
+                <div className="mt-4 flex flex-col sm:flex-row gap-3">
+                  <input
+                    data-testid="result-email-input"
+                    type="email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (["sent", "error", "invalid"].includes(emailState)) setEmailState("idle");
+                    }}
+                    placeholder={t.resultEmail.placeholder}
+                    className="flex-1 bg-transparent border border-stone-700/80 focus:border-amber-500/60 rounded-full px-5 py-3 text-sm text-stone-200 placeholder:text-stone-600 outline-none transition-colors duration-300"
+                  />
+                  <button
+                    data-testid="result-email-send-btn"
+                    onClick={sendEmail}
+                    disabled={emailState === "sending" || emailState === "sent"}
+                    className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full border border-amber-500/50 text-amber-300 text-sm font-medium hover:bg-amber-500/10 disabled:opacity-60 transition-[background-color,border-color] duration-300"
+                  >
+                    <Mail size={14} />
+                    {emailState === "sending" ? t.resultEmail.sending : t.resultEmail.send}
+                  </button>
+                </div>
+                {["sent", "error", "invalid"].includes(emailState) && (
+                  <p
+                    data-testid="result-email-status"
+                    className={`mt-3 text-xs font-mono ${emailState === "sent" ? "text-[#84A98C]" : "text-red-400"}`}
+                  >
+                    {t.resultEmail[emailState]}
+                  </p>
+                )}
               </div>
             </motion.div>
           )}

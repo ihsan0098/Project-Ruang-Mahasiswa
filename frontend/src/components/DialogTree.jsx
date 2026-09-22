@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Leaf, X } from "lucide-react";
+import { Leaf, X, Volume2, Loader2 } from "lucide-react";
 
 const EASE = [0.16, 1, 0.3, 1];
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const LEAF_POSITIONS = [
   { left: "12%", top: "18%" },
@@ -12,8 +13,39 @@ const LEAF_POSITIONS = [
   { left: "68%", top: "52%" },
 ];
 
-export const DialogTree = ({ t }) => {
+export const DialogTree = ({ t, lang }) => {
   const [open, setOpen] = useState(null);
+  const [audioState, setAudioState] = useState("idle");
+  const audioRef = useRef(null);
+
+  const stopAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    setAudioState("idle");
+  };
+
+  useEffect(() => {
+    stopAudio();
+  }, [open]);
+
+  useEffect(() => () => stopAudio(), []);
+
+  const playNarration = () => {
+    if (audioState === "playing") {
+      stopAudio();
+      return;
+    }
+    if (open === null) return;
+    setAudioState("loading");
+    const audio = new Audio(`${API}/leaf-narration/${lang}/${open}.mp3`);
+    audioRef.current = audio;
+    audio.addEventListener("playing", () => setAudioState("playing"));
+    audio.addEventListener("ended", () => setAudioState("idle"));
+    audio.addEventListener("error", () => setAudioState("idle"));
+    audio.play().catch(() => setAudioState("idle"));
+  };
 
   return (
     <div data-testid="dialog-tree-section" className="relative py-24 sm:py-32 overflow-hidden">
@@ -97,6 +129,22 @@ export const DialogTree = ({ t }) => {
                   <p className="mt-3 font-serif italic text-xl sm:text-2xl text-stone-100 leading-relaxed">
                     {t.tree.leaves[open]}
                   </p>
+                  <button
+                    data-testid="tree-narration-btn"
+                    onClick={playNarration}
+                    className="mt-5 inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-stone-500 hover:text-amber-400 transition-colors duration-300"
+                  >
+                    {audioState === "loading" ? (
+                      <Loader2 size={14} className="animate-spin" />
+                    ) : (
+                      <Volume2 size={14} className={audioState === "playing" ? "text-amber-400 animate-pulse" : ""} />
+                    )}
+                    {audioState === "loading"
+                      ? t.treeVoice.loading
+                      : audioState === "playing"
+                        ? t.treeVoice.playing
+                        : t.treeVoice.listen}
+                  </button>
                 </motion.div>
               )}
             </AnimatePresence>

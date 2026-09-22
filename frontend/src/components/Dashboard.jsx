@@ -185,6 +185,33 @@ export const Dashboard = ({ t, lang, onToggleLang }) => {
               </div>
             </div>
 
+            <div data-testid="dash-byday-card" className="rounded-2xl border border-stone-800 bg-surface/60 p-8">
+              <h2 className="font-serif text-2xl text-stone-100 mb-8">{t.dashByDayTitle}</h2>
+              <div className="h-56">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={stats.byDay.map((d) => ({ ...d, date: d.date.slice(5) }))}
+                    margin={{ top: 4, right: 8, left: -24, bottom: 0 }}
+                  >
+                    <CartesianGrid stroke="#292524" strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="date" tick={{ fill: "#78716C", fontSize: 11 }} stroke="#44403C" />
+                    <YAxis allowDecimals={false} tick={{ fill: "#78716C", fontSize: 11 }} stroke="#44403C" />
+                    <Tooltip
+                      contentStyle={{
+                        background: "#161412",
+                        border: "1px solid rgba(245,158,11,0.25)",
+                        borderRadius: 12,
+                        color: "#F5F5F4",
+                      }}
+                      labelStyle={{ color: "#F59E0B" }}
+                      cursor={{ fill: "rgba(245,158,11,0.06)" }}
+                    />
+                    <Bar dataKey="count" fill="#F59E0B" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
             <div className="flex flex-wrap gap-4">
               <button
                 data-testid="dash-refresh-btn"

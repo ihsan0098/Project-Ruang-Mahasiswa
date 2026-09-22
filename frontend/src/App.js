@@ -12,6 +12,7 @@ import { Gallery } from "@/components/Gallery";
 import { ReflectionTest } from "@/components/ReflectionTest";
 import { QRSection } from "@/components/QRSection";
 import { DialogTree } from "@/components/DialogTree";
+import { ForumSection } from "@/components/ForumSection";
 import { Marquee } from "@/components/Marquee";
 import { Team } from "@/components/Team";
 import { Footer } from "@/components/Footer";
@@ -47,7 +48,8 @@ const Landing = ({ t, lang, onToggleLang, scrollTo }) => {
           <ReflectionTest t={t} lang={lang} onNavigate={scrollTo} />
         </section>
         <QRSection t={t} />
-        <DialogTree t={t} />
+        <DialogTree t={t} lang={lang} />
+        <ForumSection t={t} lang={lang} />
         <Marquee items={t.marquee} />
         <section id="tim">
           <Team t={t} />

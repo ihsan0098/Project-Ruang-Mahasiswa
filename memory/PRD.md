@@ -22,6 +22,12 @@ Sumber data: Proposal LIDM 2026 Divisi Video Digital Pendidikan (Project Ruang) 
 - Backend: FastAPI `/api/reflection-results` (POST, simpan hasil anonim) + `/api/reflection-stats` (GET, jumlah partisipan)
 - DB: MongoDB koleksi `reflection_results` (warmth/hostility/indifference/rejection/level/locale/timestamp)
 
+## Implemented (2026-09-22, iterasi 4)
+- Forum Komunitas: kirim cerita (nama opsional/anonim, maks 500 karakter), daftar cerita terbaru, reaksi "Peluk" (localStorage anti-ganda); backend /api/forum-posts + /hug
+- Kirim Hasil Email: Resend managed (EMERGENT_EMAIL_KEY), template server-side bilingual dengan guardrail gate, rate limit 3 email/alamat/24 jam, hasil terkirim nyata (terverifikasi)
+- Narasi Audio Daun: OpenAI TTS tts-1-hd voice "sage" via EMERGENT_LLM_KEY, teks server-side tetap (5 daun × 2 bahasa), cache Mongo (generate ~6s, cache ~0.2s)
+- Dashboard: grafik "Tes per Hari · 7 Hari Terakhir" (byDay) + total responden besar; total juga tampil di intro tes
+
 ## Implemented (2026-09-22, iterasi 3)
 - Galeri Digital Karyaku: 3 sketsa seni garis SVG (Terbelenggu Ekspektasi, Suara yang Terkunci, Titik Balik) dengan animasi self-drawing stroke saat scroll
 - Peta Perbaikan di hasil tes: cara mengatasi spesifik per dimensi bermasalah (varian Orang Tua & Anak), bilingual
@@ -53,9 +59,9 @@ Sumber data: Proposal LIDM 2026 Divisi Video Digital Pendidikan (Project Ruang) 
 
 ## Backlog
 - P0: (kosong — inti selesai)
-- P1: Forum/komunitas pengasuhan inklusif; kirim hasil tes via email ke orang tua
-- P2: Audio narasi untuk Pohon Dialog; versi cetak QR untuk poster acara
+- P1: Suara narasi native Indonesia (ElevenLabs multilingual) — OpenAI TTS saat ini beraksen Inggris untuk teks Indonesia
+- P2: Moderasi forum (laporkan/sembunyikan cerita); lampiran PNG kartu hasil di email jika proxy mendukung; versi cetak QR untuk poster acara
 
 ## Next Tasks
-1. Forum komunitas pengasuhan seperti di situs referensi
-2. Kirim kartu hasil tes via email (Resend)
+1. Ganti narasi ke ElevenLabs agar aksen bahasa Indonesia natural
+2. Moderasi forum: tombol laporkan + antrean persetujuan
