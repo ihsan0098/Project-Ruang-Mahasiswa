@@ -22,6 +22,9 @@ Sumber data: Proposal LIDM 2026 Divisi Video Digital Pendidikan (Project Ruang) 
 - Backend: FastAPI `/api/reflection-results` (POST, simpan hasil anonim) + `/api/reflection-stats` (GET, jumlah partisipan)
 - DB: MongoDB koleksi `reflection_results` (warmth/hostility/indifference/rejection/level/locale/timestamp)
 
+## Implemented (2026-09-22, iterasi 8)
+- Pembersihan data uji: 18 hasil tes, 5 cerita forum, 2 pesan narahubung, 2 janji temu buatan pengembang dihapus — dashboard validasi kini mulai dari nol, hanya berisi data pengguna asli (cache audio TTS & log rate-limit email dipertahankan, bukan data pengguna)
+
 ## Implemented (2026-09-22, iterasi 7)
 - Laporan PDF Psikolog: GET /api/reflection-results/{rid}/report.pdf (reportlab) — format resmi A4: meta anonim, tingkat koneksi, tabel skor 4 dimensi + interpretasi, dimensi bermasalah, panduan interpretasi untuk psikolog (formula & ambang), disclaimer; tombol unduh di layar hasil
 - Janji Temu Konseling: formulir penjadwalan dari layar hasil (nama, kontak, tanggal, waktu, catatan), catatan urgensi otomatis saat level "Ruang Sunyi"; tersimpan dan tampil di /moderasi (section Janji Temu Konseling)
