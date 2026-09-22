@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --background: 20 14% 4%;
+        --foreground: 60 9% 96%;
+        --card: 24 10% 8%;
+        --card-foreground: 60 9% 96%;
+        --popover: 24 10% 8%;
+        --popover-foreground: 60 9% 96%;
+        --primary: 38 92% 50%;
+        --primary-foreground: 24 10% 6%;
+        --secondary: 24 8% 12%;
+        --secondary-foreground: 60 9% 96%;
+        --muted: 24 8% 12%;
+        --muted-foreground: 24 6% 64%;
+        --accent: 38 92% 50%;
+        --accent-foreground: 24 10% 6%;
+        --destructive: 0 72% 51%;
+        --destructive-foreground: 60 9% 96%;
+        --border: 30 15% 14%;
+        --input: 30 15% 14%;
+        --ring: 38 92% 50%;
+        --radius: 0.75rem;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    html {
+        scroll-behavior: auto;
+    }
+    body {
+        @apply bg-background text-foreground font-sans;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    ::selection {
+        background: rgba(245, 158, 11, 0.85);
+        color: #0c0a09;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: #0c0a09;
+}
+::-webkit-scrollbar-thumb {
+    background: #292524;
+    border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #44403c;
+}
+
+@keyframes marquee {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+.marquee-track {
+    animation: marquee 55s linear infinite;
+    will-change: transform;
+}
+.marquee-track:hover {
+    animation-play-state: paused;
+}
+
+.grain-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+        animation: none;
+    }
+}
+
+@layer base {
+    [data-debug-wrapper="true"] {
+        display: contents !important;
+    }
+
+    [data-debug-wrapper="true"] > * {
+        margin-left: inherit;
+        margin-right: inherit;
+        margin-top: inherit;
+        margin-bottom: inherit;
+        padding-left: inherit;
+        padding-right: inherit;
+        padding-top: inherit;
+        padding-bottom: inherit;
+        column-gap: inherit;
+        row-gap: inherit;
+        gap: inherit;
+        border-left-width: inherit;
+        border-right-width: inherit;
+        border-top-width: inherit;
+        border-bottom-width: inherit;
+        border-left-style: inherit;
+        border-right-style: inherit;
+        border-top-style: inherit;
+        border-bottom-style: inherit;
+        border-left-color: inherit;
+        border-right-color: inherit;
+        border-top-color: inherit;
+        border-bottom-color: inherit;
+    }
+}

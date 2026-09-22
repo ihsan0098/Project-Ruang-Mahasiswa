@@ -1,0 +1,74 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+import Lenis from "lenis";
+import "@/App.css";
+import { content } from "@/i18n";
+import { Header } from "@/components/Header";
+import { Hero } from "@/components/Hero";
+import { Manifesto } from "@/components/Manifesto";
+import { VideoSection } from "@/components/VideoSection";
+import { ReflectionTest } from "@/components/ReflectionTest";
+import { Marquee } from "@/components/Marquee";
+import { Team } from "@/components/Team";
+import { Footer } from "@/components/Footer";
+
+function App() {
+  const [lang, setLang] = useState("id");
+  const t = content[lang];
+  const lenisRef = useRef(null);
+
+  useEffect(() => {
+    const lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+    lenisRef.current = lenis;
+    let rafId;
+    const loop = (time) => {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(loop);
+    };
+    rafId = requestAnimationFrame(loop);
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
+  }, []);
+
+  const scrollTo = useCallback((id) => {
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(`#${id}`, { offset: -64, duration: 1.5 });
+    } else {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
+
+  return (
+    <div className="bg-ink text-stone-100 min-h-screen overflow-x-clip">
+      <div className="grain-overlay" aria-hidden="true" />
+      <Header
+        t={t}
+        lang={lang}
+        onToggleLang={() => setLang((l) => (l === "id" ? "en" : "id"))}
+        onNavigate={scrollTo}
+      />
+      <main>
+        <section id="beranda">
+          <Hero t={t} onNavigate={scrollTo} />
+        </section>
+        <section id="manifesto">
+          <Manifesto t={t} />
+        </section>
+        <section id="film">
+          <VideoSection t={t} />
+        </section>
+        <section id="tes">
+          <ReflectionTest t={t} lang={lang} onNavigate={scrollTo} />
+        </section>
+        <Marquee items={t.marquee} />
+        <section id="tim">
+          <Team t={t} />
+        </section>
+      </main>
+      <Footer t={t} onNavigate={scrollTo} />
+    </div>
+  );
+}
+
+export default App;

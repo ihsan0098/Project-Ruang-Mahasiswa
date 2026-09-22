@@ -1,0 +1,143 @@
+{
+  "project_name": "Project Ruang - LIDM 2026",
+  "archetype": "Cinematic Emotional Storytelling & Psychological Self-Reflection",
+  "theme": "Warmth in Darkness (Dark Mode Primary with Amber Gold & Sage Warmth)",
+  "language_support": "Bilingual (Bahasa Indonesia & English with header toggle)",
+  "context": "LIDM 2026 (Divisi Video Digital Pendidikan) Innovation Landing Page & Parent Reflection Diagnostic Tool. Story of Rafa (17) using art to express unsaid emotions under toxic masculinity pressure, and his father discovering that listening is the ultimate support.",
+  
+  "typography": {
+    "heading_font": "Cormorant Garamond, serif (or Playfair Display, serif)",
+    "body_font": "Outfit, sans-serif (or DM Sans, sans-serif)",
+    "accent_mono": "JetBrains Mono, monospace",
+    "rules": {
+      "anti_default": "STRICTLY PROHIBITED for headings: Inter, Roboto, Arial, Space Grotesk. Headings must feel editorial, warm, and deeply human.",
+      "h1_hero": "text-4xl sm:text-5xl lg:text-6xl font-serif font-semibold tracking-tight leading-[1.1]",
+      "h2_section": "text-2xl sm:text-3xl lg:text-4xl font-serif font-medium tracking-tight leading-snug",
+      "h3_sub": "text-xl sm:text-2xl font-serif font-normal text-amber-200/90",
+      "body": "text-base sm:text-lg font-sans font-light text-stone-300 leading-relaxed",
+      "overline_label": "text-xs uppercase tracking-[0.25em] font-mono text-amber-400/80"
+    }
+  },
+
+  "colors": {
+    "background_canvas": "#0C0A09",
+    "surface_card": "#161412",
+    "surface_glass": "rgba(22, 20, 18, 0.75)",
+    "border_subtle": "rgba(217, 119, 6, 0.15)",
+    "primary_amber": "#F59E0B",
+    "primary_hover": "#D97706",
+    "accent_warm_gold": "#EAB308",
+    "accent_sage_hope": "#84A98C",
+    "accent_crimson_stat": "#EF4444",
+    "text_primary": "#F5F5F4",
+    "text_muted": "#A8A29E",
+    "text_subtle": "#78716C",
+    "forbidden_colors": ["#7351B7", "#1B93A4", "pure #000000 without warm tint"]
+  },
+
+  "key_features_and_flow": [
+    {
+      "id": "header_nav",
+      "description": "Fixed glassmorphism header with logo 'Ruang.', navigation links (Manifesto, Film, Tes Refleksi, Tim), language toggle (ID/EN), and primary CTA 'Mulai Tes Refleksi'.",
+      "data_testid": "nav-header"
+    },
+    {
+      "id": "hero_section",
+      "description": "Kinetic Hero with line-by-line masked reveal animation on load. Title: 'Suara yang Tak Terdengar di Balik Maskulinis' / 'Unspoken Voices Behind Masculinity'. Subtitle introducing Rafa's story and father-son communication. Subtle 3D/parallax ambient canvas background with floating atmospheric warm light particles.",
+      "data_testid": "hero-section"
+    },
+    {
+      "id": "manifesto_chapters",
+      "description": "Numbered manifesto chapters telling the narrative problem: Chapter 01 (1 in 3 Indonesian adolescents mental health crisis), Chapter 02 (70% suicide rate among men & toxic masculinity 'anak laki jangan menangis'), Chapter 03 (Ruang: A quiet room for father and son connection).",
+      "data_testid": "manifesto-section"
+    },
+    {
+      "id": "video_spotlight",
+      "description": "Cinematic YouTube spotlight featuring embedded short film (https://www.youtube.com/watch?v=bcGpVvJwYKw) with custom theatrical frame, video synopsis, and LIDM 2026 digital video context.",
+      "data_testid": "video-section"
+    },
+    {
+      "id": "reflection_test",
+      "description": "Interactive 12-question 'Tes Refleksi Orang Tua' based on IPARTheory (Parental Acceptance-Rejection Theory). Interactive step-by-step branching feel UX, scale response 1-4, real-time progress bar, immediate psychological insight result screen showing score breakdown across 4 dimensions: Warmth/Affection (Kehangatan), Hostility/Aggression (Permusuhan), Indifference/Neglect (Ketikpedulian), and Undifferentiated Rejection (Penolakan Tanpa Alasan), along with personalized actionable advice for fathers/parents.",
+      "data_testid": "reflection-test-section"
+    },
+    {
+      "id": "editorial_marquee",
+      "description": "Slow, organic editorial marquee banner drifting quietly across screen with key quotes: 'Mendengar adalah Bentuk Cinta Tertinggi' / 'Listening is the Highest Form of Love' • 'Ruang Bicara Tanpa Penghakiman'.",
+      "data_testid": "editorial-marquee"
+    },
+    {
+      "id": "team_section",
+      "description": "LIDM 2026 Team showcase with profile cards: Shelly Alfidenia (Ketua / Leader), Aji Sulaksana (Anggota / Member), Egazia Evanggelis (Anggota / Member), Falyanzuril Ihsan (Anggota / Member), and Dosen Pembimbing: Dr. Lailatur Rahmi.",
+      "data_testid": "team-section"
+    },
+    {
+      "id": "lidm_footer",
+      "description": "LIDM 2026 Contextual footer with competition details (Divisi Video Digital Pendidikan), copyright, social links, and rapid jump navigation.",
+      "data_testid": "lidm-footer"
+    }
+  ],
+
+  "ipar_theory_questions": [
+    {"id": 1, "dimension": "Warmth", "text_id": "Saya sering memeluk atau memberikan pujian hangat ketika anak saya berhasil melakukan sesuatu.", "text_en": "I often hug or give warm praise when my child accomplishes something."},
+    {"id": 2, "dimension": "Hostility", "text_id": "Saya mudah hilang kesabaran dan membentak anak ketika dia melakukan kesalahan kecil.", "text_en": "I easily lose my patience and yell at my child over minor mistakes."},
+    {"id": 3, "dimension": "Indifference", "text_id": "Saya merasa terlalu lelah untuk mendengarkan cerita keseharian anak saya.", "text_en": "I feel too exhausted to listen to my child's daily stories."},
+    {"id": 4, "dimension": "Undifferentiated Rejection", "text_id": "Kadang saya merasa anak saya hanya menjadi beban dalam hidup saya.", "text_en": "Sometimes I feel my child is just a burden in my life."},
+    {"id": 5, "dimension": "Warmth", "text_id": "Saya berusaha meluangkan waktu khusus setiap minggu hanya untuk mengobrol berdua dengan anak.", "text_en": "I make an effort to spend dedicated 1-on-1 time chatting with my child every week."},
+    {"id": 6, "dimension": "Hostility", "text_id": "Saya menuntut anak laki-laki saya untuk selalu kuat dan melarangnya menangis.", "text_en": "I demand my son to always be strong and forbid him from crying."},
+    {"id": 7, "dimension": "Indifference", "text_id": "Saya jarang mengetahui apa yang dirasakan atau digambar oleh anak saya di kamarnya.", "text_en": "I rarely know what my child is feeling or drawing in his room."},
+    {"id": 8, "dimension": "Undifferentiated Rejection", "text_id": "Saya merasa sulit untuk bersikap ramah atau menunjukkan rasa sayang secara fisik kepada anak.", "text_en": "I find it difficult to be affectionate or show physical love to my child."},
+    {"id": 9, "dimension": "Warmth", "text_id": "Ketika anak saya sedih, saya mendengarkan tanpa langsung menyalahkan atau menceramahi.", "text_en": "When my child is sad, I listen without immediately blaming or lecturing."},
+    {"id": 10, "dimension": "Hostility", "text_id": "Saya sering membandingkan anak saya dengan anak lain yang tampak lebih maskulin atau sukses.", "text_en": "I often compare my child to others who seem more masculine or successful."},
+    {"id": 11, "dimension": "Indifference", "text_id": "Saya menganggap masalah emosional anak remaja sebagai hal yang berlebihan atau cari perhatian.", "text_en": "I view my adolescent child's emotional issues as exaggeration or attention-seeking."},
+    {"id": 12, "dimension": "Warmth", "text_id": "Saya siap belajar memahami bahasa emosi baru yang ditunjukkan oleh anak saya.", "text_en": "I am ready to learn to understand the new emotional language shown by my child."}
+  ],
+
+  "team_members": [
+    {"name": "Shelly Alfidenia", "role": "Ketua Tim / Team Leader", "focus": "Digital Storytelling & Production"},
+    {"name": "Aji Sulaksana", "role": "Anggota Tim / Creative Director", "focus": "Cinematography & Visual Arts"},
+    {"name": "Egazia Evanggelis", "role": "Anggota Tim / Researcher", "focus": "Psychological Research & Scriptwriting"},
+    {"name": "Falyanzuril Ihsan", "role": "Anggota Tim / Technical Lead", "focus": "Web Experience & Interactive Media"},
+    {"name": "Dr. Lailatur Rahmi", "role": "Dosen Pembimbing / Advisor", "focus": "Academic Guidance & Educational Media"}
+  ],
+
+  "motion_and_effects": {
+    "smooth_scroll": "Lenis Smooth Scroll engine enabled globally across the page",
+    "animations": "Framer Motion line reveal on load for hero, staggered fade-in up for manifesto chapters, smooth scale transition for video player embed, interactive step wizard transition for test steps",
+    "micro_interactions": "Subtle button glow on hover, border light bleed, ripple on reflection scale select",
+    "prefers_reduced_motion": "Ensure all animations fallback to standard instant opacity when reduced motion is requested"
+  },
+
+  "image_urls": {
+    "father_son_moment": "https://images.pexels.com/photos/8298201/pexels-photo-8298201.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "tender_connection": "https://images.pexels.com/photos/9127835/pexels-photo-9127835.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "hero_atmosphere": "https://images.unsplash.com/photo-1752760023113-a92ac2aab10f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzR8MHwxfHNlYXJjaHwxfHxmYXRoZXIlMjBzb24lMjBlbW90aW9uYWwlMjBtZW50YWwlMjBoZWFsdGglMjBzdXBwb3J0JTIwd2FybXRoJTIwaW5kb25lc2lhbiUyMGZhbWlseXxlbnwwfHx8fDE3OTAwNzg2Mzh8MA&ixlib=rb-4.1.0&q=85"
+  },
+
+  "testing_and_accessibility": {
+    "data_testid_policy": "All key components and interactive elements MUST have data-testid attributes.",
+    "required_testids": [
+      "nav-header",
+      "lang-toggle-btn",
+      "hero-title",
+      "hero-cta-btn",
+      "manifesto-chapter-1",
+      "manifesto-chapter-2",
+      "manifesto-chapter-3",
+      "youtube-iframe-container",
+      "reflection-test-wizard",
+      "reflection-option-btn",
+      "reflection-result-card",
+      "team-member-card",
+      "lidm-footer"
+    ]
+  },
+
+  "GENERAL UI UX DESIGN GUIDELINES": {
+    "rule_1": "Never center-align body text or long paragraphs. Keep left-aligned for natural human reading flow.",
+    "rule_2": "Use 2-3x generous padding inside bordered containers to avoid text touching borders (e.g. p-6, p-8).",
+    "rule_3": "Do not use generic card grids. Use asymmetrical swiss layouts and textured dark surfaces with subtle warm borders.",
+    "rule_4": "Do not use raw transparent backgrounds in navigation header or modals. Use backdrop-blur-md bg-stone-950/80.",
+    "rule_5": "Ensure all interactive hover states explicitly define text color changes (e.g., hover:bg-amber-500 hover:text-stone-950)."
+  }
+}
