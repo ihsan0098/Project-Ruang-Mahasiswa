@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { QRCodeCanvas } from "qrcode.react";
-import { ScanLine } from "lucide-react";
+import { ScanLine, BookOpen } from "lucide-react";
 
 const EASE = [0.16, 1, 0.3, 1];
 
@@ -30,6 +30,14 @@ export const QRSection = ({ t }) => {
           <p className="mt-6 text-xs font-mono uppercase tracking-[0.2em] text-stone-500">
             {t.qr.hint}
           </p>
+          <a
+            data-testid="qr-module-btn"
+            href="/modul"
+            className="mt-8 inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-amber-500 text-stone-950 font-medium hover:bg-amber-400 hover:shadow-[0_0_36px_rgba(245,158,11,0.35)] hover:-translate-y-0.5 transition-[background-color,box-shadow,transform] duration-300"
+          >
+            <BookOpen size={15} />
+            {t.qrModuleCta}
+          </a>
         </motion.div>
 
         <motion.div

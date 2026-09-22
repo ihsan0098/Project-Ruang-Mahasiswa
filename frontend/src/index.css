@@ -92,6 +92,25 @@
     }
 }
 
+@media print {
+    body {
+        background: #ffffff !important;
+    }
+    .print-hidden,
+    .grain-overlay {
+        display: none !important;
+    }
+    .print-card {
+        background: #ffffff !important;
+        border-color: #e7e5e4 !important;
+        break-inside: avoid;
+    }
+    .print-card * {
+        color: #1c1917 !important;
+        -webkit-text-stroke-color: rgba(0, 0, 0, 0.25) !important;
+    }
+}
+
 @layer base {
     [data-debug-wrapper="true"] {
         display: contents !important;

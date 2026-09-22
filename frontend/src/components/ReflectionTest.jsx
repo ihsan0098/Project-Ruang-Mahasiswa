@@ -301,6 +301,44 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
                 {mode === "son" ? t.test.disclaimerSon : t.test.disclaimer}
               </p>
 
+              {(() => {
+                const concerning = DIM_ORDER.filter((d) =>
+                  d === "warmth" ? result.warmth < 2.5 : result[d] >= 2.5
+                );
+                const rmap = t.remedies[mode];
+                return (
+                  <div data-testid="remedies-card" className="mt-6 rounded-2xl border border-stone-700/60 bg-ink/60 p-6 sm:p-8">
+                    <p className="text-xs uppercase tracking-[0.25em] font-mono text-[#84A98C] mb-3">
+                      {t.remedies.title}
+                    </p>
+                    {concerning.length === 0 ? (
+                      <p className="text-sm sm:text-base font-light text-stone-300 leading-relaxed">
+                        {t.remedies.allGood}
+                      </p>
+                    ) : (
+                      <>
+                        <p className="text-xs font-light text-stone-500 mb-6">{t.remedies.note}</p>
+                        <div className="space-y-6">
+                          {concerning.map((d) => (
+                            <div key={d} data-testid={`remedy-${d}`}>
+                              <p className="font-serif text-xl text-amber-200/90">{rmap[d].label}</p>
+                              <ul className="mt-2.5 space-y-2">
+                                {rmap[d].steps.map((s) => (
+                                  <li key={s} className="flex items-start gap-3 text-sm font-light text-stone-300 leading-relaxed">
+                                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#84A98C] shrink-0" aria-hidden="true" />
+                                    {s}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                );
+              })()}
+
               <div className="mt-8 flex flex-wrap gap-4">
                 <button
                   data-testid="download-card-btn"

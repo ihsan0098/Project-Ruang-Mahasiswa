@@ -3,10 +3,12 @@ import Lenis from "lenis";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "@/App.css";
 import { content } from "@/i18n";
+import { extra } from "@/contentExtra";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Manifesto } from "@/components/Manifesto";
 import { VideoSection } from "@/components/VideoSection";
+import { Gallery } from "@/components/Gallery";
 import { ReflectionTest } from "@/components/ReflectionTest";
 import { QRSection } from "@/components/QRSection";
 import { DialogTree } from "@/components/DialogTree";
@@ -14,6 +16,7 @@ import { Marquee } from "@/components/Marquee";
 import { Team } from "@/components/Team";
 import { Footer } from "@/components/Footer";
 import { Dashboard } from "@/components/Dashboard";
+import { ModulePage } from "@/components/ModulePage";
 
 const Landing = ({ t, lang, onToggleLang, scrollTo }) => {
   useEffect(() => {
@@ -37,6 +40,9 @@ const Landing = ({ t, lang, onToggleLang, scrollTo }) => {
         <section id="film">
           <VideoSection t={t} />
         </section>
+        <section id="galeri">
+          <Gallery t={t} />
+        </section>
         <section id="tes">
           <ReflectionTest t={t} lang={lang} onNavigate={scrollTo} />
         </section>
@@ -54,7 +60,7 @@ const Landing = ({ t, lang, onToggleLang, scrollTo }) => {
 
 function App() {
   const [lang, setLang] = useState("id");
-  const t = content[lang];
+  const t = { ...content[lang], ...extra[lang] };
   const lenisRef = useRef(null);
 
   useEffect(() => {
@@ -93,6 +99,10 @@ function App() {
         <Route
           path="/validasi"
           element={<Dashboard t={t} lang={lang} onToggleLang={toggleLang} />}
+        />
+        <Route
+          path="/modul"
+          element={<ModulePage t={t} lang={lang} onToggleLang={toggleLang} />}
         />
       </Routes>
     </BrowserRouter>

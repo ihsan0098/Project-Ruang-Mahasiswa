@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
-import { RefreshCcw, ArrowLeft, Languages, Users, UserRound, Sprout } from "lucide-react";
+import { RefreshCcw, ArrowLeft, Languages, Users, UserRound, Sprout, Download } from "lucide-react";
 
 const EASE = [0.16, 1, 0.3, 1];
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -185,14 +185,25 @@ export const Dashboard = ({ t, lang, onToggleLang }) => {
               </div>
             </div>
 
-            <button
-              data-testid="dash-refresh-btn"
-              onClick={load}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-stone-700 text-stone-300 hover:border-amber-500/60 hover:text-amber-300 transition-[border-color,color] duration-300 text-sm"
-            >
-              <RefreshCcw size={14} className={loading ? "animate-spin" : ""} />
-              {t.dash.refresh}
-            </button>
+            <div className="flex flex-wrap gap-4">
+              <button
+                data-testid="dash-refresh-btn"
+                onClick={load}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-stone-700 text-stone-300 hover:border-amber-500/60 hover:text-amber-300 transition-[border-color,color] duration-300 text-sm"
+              >
+                <RefreshCcw size={14} className={loading ? "animate-spin" : ""} />
+                {t.dash.refresh}
+              </button>
+              <a
+                data-testid="dash-export-csv-btn"
+                href={`${API}/reflection-export`}
+                download
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-amber-500 text-stone-950 text-sm font-medium hover:bg-amber-400 hover:shadow-[0_0_28px_rgba(245,158,11,0.35)] transition-[background-color,box-shadow] duration-300"
+              >
+                <Download size={14} />
+                {t.dashCsv}
+              </a>
+            </div>
           </motion.div>
         )}
 

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, Response
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -107,6 +107,21 @@ async def get_reflection_stats():
         "sonAverages": averages(sons),
         "modes": {"parent": len(parents), "son": len(sons)},
     }
+
+@api_router.get("/reflection-export")
+async def export_reflection_csv():
+    docs = await db.reflection_results.find({}, {"_id": 0}).to_list(10000)
+    fields = ["timestamp", "mode", "locale", "warmth", "hostility", "indifference", "rejection", "level"]
+    lines = [",".join(fields)]
+    for d in docs:
+        row = [str(d.get(f, "")) for f in fields]
+        row[1] = row[1] or "parent"
+        lines.append(",".join(row))
+    return Response(
+        content="\n".join(lines),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=ruang-data-refleksi.csv"},
+    )
 
 # Include the router in the main app
 app.include_router(api_router)

@@ -22,6 +22,12 @@ Sumber data: Proposal LIDM 2026 Divisi Video Digital Pendidikan (Project Ruang) 
 - Backend: FastAPI `/api/reflection-results` (POST, simpan hasil anonim) + `/api/reflection-stats` (GET, jumlah partisipan)
 - DB: MongoDB koleksi `reflection_results` (warmth/hostility/indifference/rejection/level/locale/timestamp)
 
+## Implemented (2026-09-22, iterasi 3)
+- Galeri Digital Karyaku: 3 sketsa seni garis SVG (Terbelenggu Ekspektasi, Suara yang Terkunci, Titik Balik) dengan animasi self-drawing stroke saat scroll
+- Peta Perbaikan di hasil tes: cara mengatasi spesifik per dimensi bermasalah (varian Orang Tua & Anak), bilingual
+- Ekspor CSV: GET /api/reflection-export (text/csv, mode dinormalkan) + tombol unduh di dashboard
+- Modul Dialog Orang Tua & Anak di /modul: 7 hari percakapan interaktif, progres tersimpan di localStorage, unduh via print-to-PDF dengan print stylesheet; ditautkan dari section QR
+
 ## Implemented (2026-09-22, iterasi 2)
 - Mode ganda Tes Refleksi: Orang Tua & Anak Laki-Laki (12 pertanyaan cermin per mode, hasil & saran disesuaikan per peran)
 - Kartu Hasil Dibagikan: unduh PNG 1080×1350 (canvas, font Cormorant/Outfit/JetBrains Mono) langsung dari layar hasil
@@ -47,9 +53,9 @@ Sumber data: Proposal LIDM 2026 Divisi Video Digital Pendidikan (Project Ruang) 
 
 ## Backlog
 - P0: (kosong — inti selesai)
-- P1: Galeri Digital karya Rafa (seperti situs referensi); ekspor CSV data dashboard untuk laporan validasi
-- P2: Modul komunikasi Orang Tua & Anak yang bisa diunduh; forum/komunitas pengasuhan
+- P1: Forum/komunitas pengasuhan inklusif; kirim hasil tes via email ke orang tua
+- P2: Audio narasi untuk Pohon Dialog; versi cetak QR untuk poster acara
 
 ## Next Tasks
-1. Galeri digital karya Rafa (tiga sketsa: Terbelenggu Ekspektasi, Suara yang Terkunci, Titik Balik)
-2. Ekspor CSV dari dashboard validasi untuk lampiran laporan LIDM
+1. Forum komunitas pengasuhan seperti di situs referensi
+2. Kirim kartu hasil tes via email (Resend)
