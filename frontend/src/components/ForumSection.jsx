@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
-import { Heart, Send, MessagesSquare } from "lucide-react";
+import { Heart, Send, MessagesSquare, Flag } from "lucide-react";
 
 const EASE = [0.16, 1, 0.3, 1];
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -31,6 +31,13 @@ export const ForumSection = ({ t, lang }) => {
       return [];
     }
   });
+  const [reported, setReported] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("ruang-forum-reports")) || [];
+    } catch {
+      return [];
+    }
+  });
 
   useEffect(() => {
     axios
@@ -47,17 +54,14 @@ export const ForumSection = ({ t, lang }) => {
     setSending(true);
     setNotice(null);
     try {
-      const r = await axios.post(`${API}/forum-posts`, {
+      await axios.post(`${API}/forum-posts`, {
         name: name.trim(),
         message: message.trim(),
         locale: lang,
       });
-      const post = r.data.post;
-      if (!post.name) post.name = t.forum.anonymous;
-      setPosts((p) => [post, ...p]);
       setMessage("");
       setName("");
-      setNotice({ type: "success", text: t.forum.success });
+      setNotice({ type: "success", text: t.forum.pending });
     } catch {
       setNotice({ type: "error", text: t.forum.error });
     }
@@ -71,6 +75,14 @@ export const ForumSection = ({ t, lang }) => {
     localStorage.setItem("ruang-forum-hugs", JSON.stringify(next));
     setPosts((p) => p.map((x, i) => (i === index ? { ...x, hugs: (x.hugs || 0) + 1 } : x)));
     axios.post(`${API}/forum-posts/${pid}/hug`).catch(() => {});
+  };
+
+  const report = async (pid) => {
+    if (reported.includes(pid)) return;
+    const next = [...reported, pid];
+    setReported(next);
+    localStorage.setItem("ruang-forum-reports", JSON.stringify(next));
+    axios.post(`${API}/forum-posts/${pid}/report`).catch(() => {});
   };
 
   return (
@@ -165,19 +177,34 @@ export const ForumSection = ({ t, lang }) => {
               <p className="mt-3 text-sm sm:text-base font-light text-stone-300 leading-relaxed">
                 {p.message}
               </p>
-              <button
-                data-testid={`forum-hug-btn-${i}`}
-                onClick={() => hug(p.pid, i)}
-                disabled={hugged.includes(p.pid)}
-                className={`mt-4 inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.15em] transition-colors duration-300 ${
-                  hugged.includes(p.pid)
-                    ? "text-amber-400"
-                    : "text-stone-500 hover:text-amber-400"
-                }`}
-              >
-                <Heart size={13} className={hugged.includes(p.pid) ? "fill-amber-400" : ""} />
-                {t.forum.hug} · {p.hugs || 0}
-              </button>
+              <div className="mt-4 flex items-center gap-6">
+                <button
+                  data-testid={`forum-hug-btn-${i}`}
+                  onClick={() => hug(p.pid, i)}
+                  disabled={hugged.includes(p.pid)}
+                  className={`inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.15em] transition-colors duration-300 ${
+                    hugged.includes(p.pid)
+                      ? "text-amber-400"
+                      : "text-stone-500 hover:text-amber-400"
+                  }`}
+                >
+                  <Heart size={13} className={hugged.includes(p.pid) ? "fill-amber-400" : ""} />
+                  {t.forum.hug} · {p.hugs || 0}
+                </button>
+                <button
+                  data-testid={`forum-report-btn-${i}`}
+                  onClick={() => report(p.pid)}
+                  disabled={reported.includes(p.pid)}
+                  className={`inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.15em] transition-colors duration-300 ${
+                    reported.includes(p.pid)
+                      ? "text-red-400/70"
+                      : "text-stone-600 hover:text-red-400"
+                  }`}
+                >
+                  <Flag size={12} />
+                  {reported.includes(p.pid) ? t.forum.reported : t.forum.report}
+                </button>
+              </div>
             </motion.article>
           ))}
         </motion.div>

@@ -22,6 +22,12 @@ Sumber data: Proposal LIDM 2026 Divisi Video Digital Pendidikan (Project Ruang) 
 - Backend: FastAPI `/api/reflection-results` (POST, simpan hasil anonim) + `/api/reflection-stats` (GET, jumlah partisipan)
 - DB: MongoDB koleksi `reflection_results` (warmth/hostility/indifference/rejection/level/locale/timestamp)
 
+## Implemented (2026-09-22, iterasi 5)
+- Moderasi forum: kiriman baru berstatus pending (tidak tampil publik), tombol Laporkan per cerita (auto-sembunyi setelah 3 laporan), halaman admin /moderasi berkunci (X-Admin-Key) dengan antrean persetujuan Setujui/Tolak, daftar cerita dilaporkan, dan kotak masuk pesan narahubung
+- Narahubung & Bantuan: 3 hotline resmi (SEJIWA 119 ext. 8, Halo Kemenkes 1500-567, Into The Light Indonesia) + formulir pesan ke tim (tersimpan, tampil di /moderasi)
+- Narasi siap ElevenLabs: backend otomatis memakai eleven_multilingual_v2 begitu ELEVENLABS_API_KEY diisi (fallback OpenAI "sage"); cache key menyertakan provider
+- Kunci admin forum tercatat di /app/memory/test_credentials.md
+
 ## Implemented (2026-09-22, iterasi 4)
 - Forum Komunitas: kirim cerita (nama opsional/anonim, maks 500 karakter), daftar cerita terbaru, reaksi "Peluk" (localStorage anti-ganda); backend /api/forum-posts + /hug
 - Kirim Hasil Email: Resend managed (EMERGENT_EMAIL_KEY), template server-side bilingual dengan guardrail gate, rate limit 3 email/alamat/24 jam, hasil terkirim nyata (terverifikasi)
@@ -58,10 +64,10 @@ Sumber data: Proposal LIDM 2026 Divisi Video Digital Pendidikan (Project Ruang) 
 - Screenshot e2e: hero, manifesto, kuis 12 pertanyaan mode Orang Tua & Anak → hasil, unduh kartu PNG (terverifikasi visual), QR section, Pohon Dialog, toggle EN, iframe YouTube, tim, footer, dashboard /validasi
 
 ## Backlog
-- P0: (kosong — inti selesai)
-- P1: Suara narasi native Indonesia (ElevenLabs multilingual) — OpenAI TTS saat ini beraksen Inggris untuk teks Indonesia
-- P2: Moderasi forum (laporkan/sembunyikan cerita); lampiran PNG kartu hasil di email jika proxy mendukung; versi cetak QR untuk poster acara
+- P0: Isi ELEVENLABS_API_KEY di backend/.env untuk narasi Indonesia natural (user belum punya key saat diminta)
+- P1: Tambahkan kontak narahubung asli tim (WA/email Shelly dkk.) ke section Narahubung — menunggu data dari user
+- P2: Poster QR cetak PDF; notifikasi email ke tim saat ada pesan narahubung masuk
 
 ## Next Tasks
-1. Ganti narasi ke ElevenLabs agar aksen bahasa Indonesia natural
-2. Moderasi forum: tombol laporkan + antrean persetujuan
+1. User mengirim API key ElevenLabs → aktifkan suara Indonesia natural
+2. User mengirim kontak narahubung tim → tampilkan tombol WhatsApp/email langsung

@@ -13,11 +13,13 @@ import { ReflectionTest } from "@/components/ReflectionTest";
 import { QRSection } from "@/components/QRSection";
 import { DialogTree } from "@/components/DialogTree";
 import { ForumSection } from "@/components/ForumSection";
+import { ContactSection } from "@/components/ContactSection";
 import { Marquee } from "@/components/Marquee";
 import { Team } from "@/components/Team";
 import { Footer } from "@/components/Footer";
 import { Dashboard } from "@/components/Dashboard";
 import { ModulePage } from "@/components/ModulePage";
+import { ModerationPage } from "@/components/ModerationPage";
 
 const Landing = ({ t, lang, onToggleLang, scrollTo }) => {
   useEffect(() => {
@@ -50,6 +52,7 @@ const Landing = ({ t, lang, onToggleLang, scrollTo }) => {
         <QRSection t={t} />
         <DialogTree t={t} lang={lang} />
         <ForumSection t={t} lang={lang} />
+        <ContactSection t={t} lang={lang} />
         <Marquee items={t.marquee} />
         <section id="tim">
           <Team t={t} />
@@ -105,6 +108,10 @@ function App() {
         <Route
           path="/modul"
           element={<ModulePage t={t} lang={lang} onToggleLang={toggleLang} />}
+        />
+        <Route
+          path="/moderasi"
+          element={<ModerationPage t={t} />}
         />
       </Routes>
     </BrowserRouter>

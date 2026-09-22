@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, Response, HTTPException
+from fastapi import FastAPI, APIRouter, Response, HTTPException, Request
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -39,6 +39,11 @@ EMAIL_BASE_URL = "https://integrations.emergentagent.com"
 EMAIL_KEY = os.environ.get("EMERGENT_EMAIL_KEY", "")
 EMAIL_FROM_NAME = os.environ.get("EMAIL_FROM_NAME", "Project Ruang")
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "")
+FORUM_ADMIN_KEY = os.environ.get("FORUM_ADMIN_KEY", "")
+
+# ElevenLabs (optional upgrade; falls back to OpenAI TTS when unset)
+ELEVEN_KEY = os.environ.get("ELEVENLABS_API_KEY", "")
+ELEVEN_VOICE = os.environ.get("ELEVENLABS_VOICE_ID", "pNInz6obpgDQGcFmaJgB")
 
 _SHORTENERS = ("bit.ly", "tinyurl.com", "t.co", "is.gd", "cutt.ly", "goo.gl", "rebrand.ly")
 _CRED_ASK = ("reply with your password", "reply with the code", "send your password", "cvv",
@@ -233,6 +238,11 @@ TTS_VOICE = "sage"
 TTS_MODEL = "tts-1-hd"
 
 
+def _check_admin(request: Request):
+    if not FORUM_ADMIN_KEY or request.headers.get("X-Admin-Key") != FORUM_ADMIN_KEY:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+
 # Define Models
 class StatusCheck(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -366,7 +376,7 @@ async def email_reflection_result(rid: str, input: EmailRequest):
     return {"ok": True, "email_id": email_id}
 
 
-# --- Community forum ---
+# --- Community forum (moderated) ---
 class ForumPostCreate(BaseModel):
     name: str = ""
     message: str
@@ -389,6 +399,8 @@ async def create_forum_post(input: ForumPostCreate):
         "message": message,
         "locale": input.locale if input.locale in ("id", "en") else "id",
         "hugs": 0,
+        "reports": 0,
+        "status": "pending",
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
     await db.forum_posts.insert_one(doc)
@@ -398,7 +410,10 @@ async def create_forum_post(input: ForumPostCreate):
 
 @api_router.get("/forum-posts")
 async def list_forum_posts():
-    docs = await db.forum_posts.find({}, {"_id": 0}).sort("timestamp", -1).to_list(60)
+    docs = await db.forum_posts.find(
+        {"$or": [{"status": "approved"}, {"status": {"$exists": False}}]},
+        {"_id": 0},
+    ).sort("timestamp", -1).to_list(60)
     for d in docs:
         if not d.get("name"):
             d["name"] = "Orang Tua Anonim" if d.get("locale") == "id" else "Anonymous Parent"
@@ -411,13 +426,70 @@ async def hug_forum_post(pid: str):
     return {"ok": True}
 
 
-# --- Leaf narration (TTS with Mongo cache) ---
+@api_router.post("/forum-posts/{pid}/report")
+async def report_forum_post(pid: str):
+    await db.forum_posts.update_one({"pid": pid}, {"$inc": {"reports": 1}})
+    doc = await db.forum_posts.find_one({"pid": pid})
+    if doc and doc.get("reports", 0) >= 3:
+        await db.forum_posts.update_one({"pid": pid}, {"$set": {"status": "flagged"}})
+    return {"ok": True}
+
+
+@api_router.get("/forum-admin/overview")
+async def forum_admin_overview(request: Request):
+    _check_admin(request)
+    posts = await db.forum_posts.find({}, {"_id": 0}).sort("timestamp", -1).to_list(200)
+    messages = await db.contact_messages.find({}, {"_id": 0}).sort("timestamp", -1).to_list(200)
+    return {"posts": posts, "messages": messages}
+
+
+@api_router.post("/forum-admin/posts/{pid}/{action}")
+async def forum_admin_action(pid: str, action: str, request: Request):
+    _check_admin(request)
+    if action not in ("approve", "reject"):
+        raise HTTPException(status_code=400, detail="Invalid action")
+    await db.forum_posts.update_one(
+        {"pid": pid}, {"$set": {"status": "approved" if action == "approve" else "rejected"}}
+    )
+    return {"ok": True}
+
+
+# --- Contact messages (narahubung) ---
+class ContactMessageCreate(BaseModel):
+    name: str
+    contact: str = ""
+    message: str
+    locale: str = "id"
+
+
+@api_router.post("/contact-messages")
+async def create_contact_message(input: ContactMessageCreate):
+    name = _clean(input.name)[:60]
+    contact = _clean(input.contact)[:80]
+    message = _clean(input.message)
+    if len(name) < 2 or len(message) < 10 or len(message) > 1000:
+        raise HTTPException(status_code=400, detail="Invalid message")
+    doc = {
+        "cid": str(uuid.uuid4()),
+        "name": name,
+        "contact": contact,
+        "message": message,
+        "locale": input.locale if input.locale in ("id", "en") else "id",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.contact_messages.insert_one(doc)
+    return {"ok": True}
+
+
+# --- Leaf narration (TTS with Mongo cache; ElevenLabs when key present) ---
 @api_router.get("/leaf-narration/{locale}/{index}.mp3")
 async def leaf_narration(locale: str, index: int):
     if locale not in LEAF_TEXTS or not (0 <= index < len(LEAF_TEXTS[locale])):
         raise HTTPException(status_code=404, detail="Not found")
     text = LEAF_TEXTS[locale][index]
-    key = hashlib.sha256(f"{text}|{TTS_VOICE}|1.0|{TTS_MODEL}|mp3".encode()).hexdigest()
+    provider = "elevenlabs" if ELEVEN_KEY else "openai"
+    voice = ELEVEN_VOICE if ELEVEN_KEY else TTS_VOICE
+    key = hashlib.sha256(f"{text}|{provider}|{voice}|{TTS_MODEL}|mp3".encode()).hexdigest()
     cached = await db.leaf_audio.find_one({"key": key})
     if cached:
         return Response(
@@ -425,10 +497,22 @@ async def leaf_narration(locale: str, index: int):
             media_type="audio/mpeg",
             headers={"Cache-Control": "public, max-age=31536000"},
         )
-    from emergentintegrations.llm.openai import OpenAITextToSpeech
-    tts = OpenAITextToSpeech(api_key=os.environ["EMERGENT_LLM_KEY"])
     try:
-        audio = await tts.generate_speech(text=text, model=TTS_MODEL, voice=TTS_VOICE)
+        if ELEVEN_KEY:
+            from elevenlabs.client import AsyncElevenLabs
+            el = AsyncElevenLabs(api_key=ELEVEN_KEY)
+            audio_stream = await el.text_to_speech.convert(
+                text=text,
+                voice_id=ELEVEN_VOICE,
+                model_id="eleven_multilingual_v2",
+            )
+            audio = b""
+            async for chunk in audio_stream:
+                audio += chunk
+        else:
+            from emergentintegrations.llm.openai import OpenAITextToSpeech
+            tts = OpenAITextToSpeech(api_key=os.environ["EMERGENT_LLM_KEY"])
+            audio = await tts.generate_speech(text=text, model=TTS_MODEL, voice=TTS_VOICE)
     except Exception as e:
         logger.error(f"TTS generation failed: {e}")
         raise HTTPException(status_code=502, detail="TTS generation failed")
