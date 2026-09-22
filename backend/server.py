@@ -440,7 +440,8 @@ async def forum_admin_overview(request: Request):
     _check_admin(request)
     posts = await db.forum_posts.find({}, {"_id": 0}).sort("timestamp", -1).to_list(200)
     messages = await db.contact_messages.find({}, {"_id": 0}).sort("timestamp", -1).to_list(200)
-    return {"posts": posts, "messages": messages}
+    bookings = await db.counseling_bookings.find({}, {"_id": 0}).sort("timestamp", -1).to_list(200)
+    return {"posts": posts, "messages": messages, "bookings": bookings}
 
 
 @api_router.post("/forum-admin/posts/{pid}/{action}")
@@ -521,6 +522,224 @@ async def leaf_narration(locale: str, index: int):
         content=audio,
         media_type="audio/mpeg",
         headers={"Cache-Control": "public, max-age=31536000"},
+    )
+
+
+# --- Counseling bookings ---
+class BookingCreate(BaseModel):
+    rid: str = ""
+    name: str
+    contact: str
+    date: str = ""
+    time: str = ""
+    note: str = ""
+    locale: str = "id"
+
+
+@api_router.post("/counseling-bookings")
+async def create_booking(input: BookingCreate):
+    name = _clean(input.name)[:60]
+    contact = _clean(input.contact)[:80]
+    note = _clean(input.note)[:500]
+    if len(name) < 2 or len(contact) < 5:
+        raise HTTPException(status_code=400, detail="Name and contact are required")
+    doc = {
+        "bid": str(uuid.uuid4()),
+        "rid": input.rid,
+        "name": name,
+        "contact": contact,
+        "date": input.date[:20],
+        "time": input.time[:20],
+        "note": note,
+        "locale": input.locale if input.locale in ("id", "en") else "id",
+        "status": "baru",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.counseling_bookings.insert_one(doc)
+    return {"ok": True}
+
+
+# --- Official PDF report for psychologists ---
+@api_router.get("/reflection-results/{rid}/report.pdf")
+async def reflection_report_pdf(rid: str):
+    doc = await db.reflection_results.find_one({"rid": rid}, {"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Result not found")
+
+    import io
+    from reportlab.lib.pagesizes import A4
+    from reportlab.pdfgen import canvas as rl_canvas
+    from reportlab.lib.colors import HexColor
+
+    loc = doc.get("locale", "id")
+    if loc not in ("id", "en"):
+        loc = "id"
+    mode = doc.get("mode", "parent")
+    level = doc.get("level", "warm")
+    dims = ["warmth", "hostility", "indifference", "rejection"]
+    scores = {d: float(doc.get(d, 0)) for d in dims}
+    connection = scores["warmth"] + (5 - scores["hostility"]) + (5 - scores["indifference"]) + (5 - scores["rejection"])
+
+    T = {
+        "id": {
+            "title": "LAPORAN HASIL TES REFLEKSI",
+            "platform": "Project Ruang - Instrumen Refleksi Keluarga (LIDM 2026)",
+            "meta_mode": "Mode Responden",
+            "meta_date": "Tanggal Tes",
+            "meta_id": "ID Laporan (anonim)",
+            "level_title": "Tingkat Koneksi",
+            "dim_title": "Skor per Dimensi IPARTheory (skala 1-4)",
+            "interp": "Interpretasi",
+            "high": "Tinggi",
+            "low": "Rendah",
+            "guide_title": "PANDUAN INTERPRETASI UNTUK PSIKOLOG",
+            "guide": [
+                "Skor koneksi = Kehangatan + (5 - Permusuhan) + (5 - Ketidakpedulian) + (5 - Penolakan).",
+                "Tingkat: >= 13 Ruang Hangat | 10-12,9 Ruang Samar | < 10 Ruang Sunyi. Skor Anda: %.1f." % connection,
+                "Kehangatan < 2,5 atau dimensi negatif >= 2,5 menandakan area yang perlu dieksplorasi.",
+                "Instrumen ini bersifat reflektif-edukatif (bukan diagnosis klinis) dan sedang dalam",
+                "proses validasi psikometri. Gunakan sebagai bahan pembuka eksplorasi dalam sesi.",
+            ],
+            "note_title": "Catatan Dimensi yang Perlu Perhatian",
+            "healthy": "Seluruh dimensi berada pada rentang sehat.",
+            "disclaimer": "Dokumen ini dihasilkan otomatis oleh platform Project Ruang dan bukan diagnosis klinis.",
+            "anon": "Seluruh data responden bersifat anonim; laporan ini tidak memuat identitas pribadi.",
+        },
+        "en": {
+            "title": "REFLECTION TEST RESULT REPORT",
+            "platform": "Project Ruang - Family Reflection Instrument (LIDM 2026)",
+            "meta_mode": "Respondent Mode",
+            "meta_date": "Test Date",
+            "meta_id": "Report ID (anonymous)",
+            "level_title": "Connection Level",
+            "dim_title": "IPARTheory Dimension Scores (1-4 scale)",
+            "interp": "Interpretation",
+            "high": "High",
+            "low": "Low",
+            "guide_title": "INTERPRETATION GUIDE FOR PSYCHOLOGISTS",
+            "guide": [
+                "Connection score = Warmth + (5 - Hostility) + (5 - Indifference) + (5 - Rejection).",
+                "Levels: >= 13 Warm Space | 10-12.9 Fading Space | < 10 Silent Room. Score: %.1f." % connection,
+                "Warmth < 2.5 or any negative dimension >= 2.5 marks an area worth exploring.",
+                "This instrument is reflective-educational (not a clinical diagnosis) and is currently",
+                "undergoing psychometric validation. Use it as an opening frame within sessions.",
+            ],
+            "note_title": "Dimensions Needing Attention",
+            "healthy": "All dimensions are within the healthy range.",
+            "disclaimer": "This document is automatically generated by the Project Ruang platform and is not a clinical diagnosis.",
+            "anon": "All respondent data is anonymous; this report contains no personal identity.",
+        },
+    }[loc]
+
+    buf = io.BytesIO()
+    c = rl_canvas.Canvas(buf, pagesize=A4)
+    W, H = A4
+    ink = HexColor("#1C1917")
+    amber = HexColor("#B45309")
+    gray = HexColor("#57534E")
+    light = HexColor("#A8A29E")
+    sage = HexColor("#5B8A64")
+    red = HexColor("#B91C1C")
+    level_color = {"warm": sage, "fading": amber, "silent": red}.get(level, amber)
+
+    c.setFillColor(HexColor("#FAF7F2"))
+    c.rect(0, 0, W, H, stroke=0, fill=1)
+    c.setFillColor(ink)
+    c.setFont("Times-Bold", 22)
+    c.drawString(50, H - 60, "Ruang.")
+    c.setFillColor(amber)
+    c.setFont("Helvetica-Bold", 10)
+    c.drawString(50, H - 78, T["title"])
+    c.setFillColor(gray)
+    c.setFont("Helvetica", 9)
+    c.drawString(50, H - 92, T["platform"])
+    c.setStrokeColor(HexColor("#E7E0D4"))
+    c.line(50, H - 102, W - 50, H - 102)
+
+    y = H - 128
+    c.setFont("Helvetica", 9)
+    c.setFillColor(light)
+    c.drawString(50, y, T["meta_mode"])
+    c.drawString(220, y, T["meta_date"])
+    c.drawString(390, y, T["meta_id"])
+    c.setFillColor(ink)
+    c.setFont("Helvetica-Bold", 10)
+    c.drawString(50, y - 14, MODE_LABELS[loc].get(mode, mode))
+    c.drawString(220, y - 14, str(doc.get("timestamp", ""))[:10])
+    c.drawString(390, y - 14, rid[:8])
+
+    y -= 52
+    c.setFillColor(light)
+    c.setFont("Helvetica", 9)
+    c.drawString(50, y, T["level_title"].upper())
+    c.setFillColor(level_color)
+    c.setFont("Times-Bold", 20)
+    c.drawString(50, y - 24, LEVEL_TITLES[loc].get(mode, LEVEL_TITLES[loc]["parent"]).get(level, ""))
+
+    y -= 62
+    c.setFillColor(ink)
+    c.setFont("Helvetica-Bold", 10)
+    c.drawString(50, y, T["dim_title"])
+    y -= 20
+    c.setFont("Helvetica", 9)
+    for d in dims:
+        v = scores[d]
+        concerning = v < 2.5 if d == "warmth" else v >= 2.5
+        c.setFillColor(ink)
+        c.drawString(50, y, DIM_LABELS[loc][d])
+        c.setFillColor(red if concerning else sage)
+        c.setFont("Helvetica-Bold", 9)
+        c.drawString(320, y, "%.2f / 4" % v)
+        c.setFillColor(red if concerning else gray)
+        c.setFont("Helvetica", 9)
+        c.drawString(390, y, "%s: %s" % (T["interp"], (T["high"] if concerning and d != "warmth" else T["low"]) if concerning else (T["high"] if d == "warmth" else T["low"])))
+        c.setStrokeColor(HexColor("#F0EDE8"))
+        c.line(50, y - 6, W - 50, y - 6)
+        y -= 22
+
+    y -= 14
+    c.setFillColor(ink)
+    c.setFont("Helvetica-Bold", 10)
+    c.drawString(50, y, T["note_title"])
+    y -= 18
+    c.setFont("Helvetica", 9)
+    concerning_dims = [d for d in dims if (scores[d] < 2.5 if d == "warmth" else scores[d] >= 2.5)]
+    if concerning_dims:
+        for d in concerning_dims:
+            c.setFillColor(red)
+            c.drawString(58, y, "- %s (%.2f/4)" % (DIM_LABELS[loc][d], scores[d]))
+            y -= 15
+    else:
+        c.setFillColor(sage)
+        c.drawString(58, y, T["healthy"])
+        y -= 15
+
+    y -= 24
+    c.setFillColor(HexColor("#F5EFE4"))
+    box_h = 24 + 16 * len(T["guide"])
+    c.roundRect(50, y - box_h + 14, W - 100, box_h, 8, stroke=0, fill=1)
+    c.setFillColor(amber)
+    c.setFont("Helvetica-Bold", 9)
+    c.drawString(62, y - 6, T["guide_title"])
+    c.setFillColor(gray)
+    c.setFont("Helvetica", 8.5)
+    yy = y - 22
+    for line in T["guide"]:
+        c.drawString(62, yy, line)
+        yy -= 16
+
+    c.setFillColor(light)
+    c.setFont("Helvetica", 7.5)
+    c.drawString(50, 56, T["disclaimer"])
+    c.drawString(50, 44, T["anon"])
+    c.setFont("Helvetica-Bold", 7.5)
+    c.drawString(50, 30, "Project Ruang - LIDM 2026")
+    c.save()
+
+    return Response(
+        content=buf.getvalue(),
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename=ruang-laporan-{rid[:8]}.pdf"},
     )
 
 
