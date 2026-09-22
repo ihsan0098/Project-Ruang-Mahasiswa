@@ -126,8 +126,8 @@ export const Hero = ({ t, onNavigate }) => {
               {t.hero.ctaPrimary}
             </button>
             <button
-              data-testid="hero-film-btn"
-              onClick={() => onNavigate("film")}
+              data-testid="hero-manifesto-btn"
+              onClick={() => onNavigate("manifesto")}
               className="group inline-flex items-center gap-3 px-8 py-4 rounded-full border border-stone-700 text-stone-200 hover:border-amber-500/60 hover:text-amber-300 transition-[border-color,color] duration-300"
             >
               <span className="flex items-center justify-center w-6 h-6 rounded-full bg-stone-800 group-hover:bg-amber-500/20 transition-colors duration-300">

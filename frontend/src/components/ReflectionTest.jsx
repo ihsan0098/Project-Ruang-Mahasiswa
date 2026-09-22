@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
-import { ArrowLeft, RotateCcw, Sparkle, Users, Download, UserRound, Sprout, Mail } from "lucide-react";
+import { ArrowLeft, RotateCcw, Sparkle, Users, Download, UserRound, Sprout, Mail, FileText, CalendarPlus } from "lucide-react";
 import { downloadResultCard } from "@/utils/shareCard";
 
 const EASE = [0.16, 1, 0.3, 1];
@@ -21,6 +21,9 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
   const [email, setEmail] = useState("");
   const [emailState, setEmailState] = useState("idle");
   const [resultId, setResultId] = useState(null);
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const [booking, setBooking] = useState({ name: "", contact: "", date: "", time: 0, note: "" });
+  const [bookingState, setBookingState] = useState("idle");
   const advancing = useRef(false);
 
   useEffect(() => {
@@ -79,6 +82,9 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
     setResultId(null);
     setEmail("");
     setEmailState("idle");
+    setBookingOpen(false);
+    setBooking({ name: "", contact: "", date: "", time: 0, note: "" });
+    setBookingState("idle");
     advancing.current = false;
     setStage("intro");
   };
@@ -107,6 +113,28 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
       setEmailState("sent");
     } catch {
       setEmailState("error");
+    }
+  };
+
+  const submitBooking = async () => {
+    if (booking.name.trim().length < 2 || booking.contact.trim().length < 5) {
+      setBookingState("invalid");
+      return;
+    }
+    setBookingState("sending");
+    try {
+      await axios.post(`${API}/counseling-bookings`, {
+        rid: resultId || "",
+        name: booking.name.trim(),
+        contact: booking.contact.trim(),
+        date: booking.date,
+        time: t.booking.times[booking.time],
+        note: booking.note.trim(),
+        locale: lang,
+      });
+      setBookingState("sent");
+    } catch {
+      setBookingState("error");
     }
   };
 
@@ -178,7 +206,17 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
                   {t.test.countText(count)}
                 </p>
               )}
-              <div className="mt-10">
+              <div className="mt-8 flex flex-wrap gap-3">
+                {t.test.chips.map((chip) => (
+                  <span
+                    key={chip}
+                    className="px-4 py-1.5 rounded-full border border-stone-700/80 text-[11px] font-mono uppercase tracking-[0.15em] text-stone-400"
+                  >
+                    {chip}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-8">
                 <button
                   data-testid="start-reflection-btn"
                   onClick={() => setStage("quiz")}
@@ -186,6 +224,9 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
                 >
                   {t.test.start}
                 </button>
+                <p data-testid="test-consent-note" className="mt-4 text-xs font-light text-stone-500 leading-relaxed max-w-md">
+                  {t.test.consent}
+                </p>
               </div>
             </motion.div>
           )}
@@ -374,6 +415,19 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
                   <Download size={14} className={downloading ? "animate-bounce" : ""} />
                   {downloading ? t.test.sharing : t.test.share}
                 </button>
+                <a
+                  data-testid="download-report-btn"
+                  href={resultId ? `${API}/reflection-results/${resultId}/report.pdf` : undefined}
+                  aria-disabled={!resultId}
+                  className={`inline-flex items-center gap-2 px-7 py-3.5 rounded-full border text-sm font-medium transition-[border-color,color,background-color] duration-300 ${
+                    resultId
+                      ? "border-amber-500/50 text-amber-300 hover:bg-amber-500/10"
+                      : "border-stone-800 text-stone-600 pointer-events-none"
+                  }`}
+                >
+                  <FileText size={14} />
+                  {t.report.download}
+                </a>
                 <button
                   data-testid="retake-test-btn"
                   onClick={reset}
@@ -390,6 +444,7 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
                   {t.test.watchFilm}
                 </button>
               </div>
+              <p className="mt-3 text-[11px] font-mono text-stone-600">{t.report.note}</p>
 
               <div className="mt-6 rounded-2xl border border-stone-700/60 bg-ink/60 p-6">
                 <p className="text-xs font-light text-stone-400 leading-relaxed">
@@ -424,6 +479,122 @@ export const ReflectionTest = ({ t, lang, onNavigate }) => {
                   >
                     {t.resultEmail[emailState]}
                   </p>
+                )}
+              </div>
+
+              <div className={`mt-6 rounded-2xl border p-6 ${result.level === "silent" ? "border-red-500/30 bg-red-500/5" : "border-stone-700/60 bg-ink/60"}`}>
+                {result.level === "silent" && !bookingOpen && bookingState !== "sent" && (
+                  <p data-testid="booking-urgent-note" className="mb-4 text-sm font-light text-red-300/90 leading-relaxed">
+                    {t.booking.urgent}
+                  </p>
+                )}
+                {bookingState !== "sent" && (
+                  <button
+                    data-testid="booking-toggle-btn"
+                    onClick={() => setBookingOpen((o) => !o)}
+                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-[#84A98C] text-stone-950 text-sm font-medium hover:bg-[#9bc0a2] hover:shadow-[0_0_28px_rgba(132,169,140,0.3)] transition-[background-color,box-shadow] duration-300"
+                  >
+                    <CalendarPlus size={15} />
+                    {t.booking.cta}
+                  </button>
+                )}
+
+                <AnimatePresence>
+                  {bookingOpen && bookingState !== "sent" && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.4, ease: EASE }}
+                      className="overflow-hidden"
+                    >
+                      <div className="pt-6">
+                        <p className="text-xs font-light text-stone-400 leading-relaxed mb-5">
+                          {t.booking.desc}
+                        </p>
+                        <div className="grid sm:grid-cols-2 gap-4">
+                          <input
+                            data-testid="booking-name-input"
+                            value={booking.name}
+                            onChange={(e) => setBooking({ ...booking, name: e.target.value })}
+                            maxLength={60}
+                            placeholder={t.booking.namePh}
+                            className="bg-transparent border border-stone-700/80 focus:border-amber-500/60 rounded-xl px-5 py-3 text-sm text-stone-200 placeholder:text-stone-600 outline-none transition-colors duration-300"
+                          />
+                          <input
+                            data-testid="booking-contact-input"
+                            value={booking.contact}
+                            onChange={(e) => setBooking({ ...booking, contact: e.target.value })}
+                            maxLength={80}
+                            placeholder={t.booking.contactPh}
+                            className="bg-transparent border border-stone-700/80 focus:border-amber-500/60 rounded-xl px-5 py-3 text-sm text-stone-200 placeholder:text-stone-600 outline-none transition-colors duration-300"
+                          />
+                          <div>
+                            <label className="block text-[10px] font-mono uppercase tracking-[0.2em] text-stone-500 mb-2">
+                              {t.booking.dateLabel}
+                            </label>
+                            <input
+                              data-testid="booking-date-input"
+                              type="date"
+                              value={booking.date}
+                              onChange={(e) => setBooking({ ...booking, date: e.target.value })}
+                              className="w-full bg-transparent border border-stone-700/80 focus:border-amber-500/60 rounded-xl px-5 py-3 text-sm text-stone-200 outline-none transition-colors duration-300 [color-scheme:dark]"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-mono uppercase tracking-[0.2em] text-stone-500 mb-2">
+                              {t.booking.timeLabel}
+                            </label>
+                            <select
+                              data-testid="booking-time-select"
+                              value={booking.time}
+                              onChange={(e) => setBooking({ ...booking, time: Number(e.target.value) })}
+                              className="w-full bg-ink border border-stone-700/80 focus:border-amber-500/60 rounded-xl px-5 py-3 text-sm text-stone-200 outline-none transition-colors duration-300"
+                            >
+                              {t.booking.times.map((time, ti) => (
+                                <option key={time} value={ti}>{time}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                        <textarea
+                          data-testid="booking-note-input"
+                          value={booking.note}
+                          onChange={(e) => setBooking({ ...booking, note: e.target.value })}
+                          maxLength={500}
+                          rows={2}
+                          placeholder={t.booking.notePh}
+                          className="mt-4 w-full bg-transparent border border-stone-700/80 focus:border-amber-500/60 rounded-xl px-5 py-3 text-sm font-light text-stone-200 placeholder:text-stone-600 resize-none outline-none transition-colors duration-300"
+                        />
+                        <div className="mt-5 flex items-center gap-4">
+                          <button
+                            data-testid="booking-submit-btn"
+                            onClick={submitBooking}
+                            disabled={bookingState === "sending"}
+                            className="px-7 py-3 rounded-full bg-amber-500 text-stone-950 text-sm font-medium hover:bg-amber-400 disabled:opacity-60 transition-colors duration-300"
+                          >
+                            {bookingState === "sending" ? t.booking.sending : t.booking.submit}
+                          </button>
+                          {["error", "invalid"].includes(bookingState) && (
+                            <p data-testid="booking-status" className="text-xs font-mono text-red-400">
+                              {t.booking[bookingState]}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {bookingState === "sent" && (
+                  <motion.p
+                    data-testid="booking-status"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-sm font-light text-[#84A98C] leading-relaxed"
+                  >
+                    {t.booking.success}
+                  </motion.p>
                 )}
               </div>
             </motion.div>

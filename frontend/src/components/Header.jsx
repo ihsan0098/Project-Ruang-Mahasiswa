@@ -12,9 +12,9 @@ export const Header = ({ t, lang, onToggleLang, onNavigate }) => {
   }, []);
 
   const links = [
+    { id: "tes", label: t.nav.test },
     { id: "manifesto", label: t.nav.manifesto },
     { id: "film", label: t.nav.film },
-    { id: "tes", label: t.nav.test },
     { id: "tim", label: t.nav.team },
   ];
 

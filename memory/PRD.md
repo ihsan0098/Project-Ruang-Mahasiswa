@@ -22,6 +22,25 @@ Sumber data: Proposal LIDM 2026 Divisi Video Digital Pendidikan (Project Ruang) 
 - Backend: FastAPI `/api/reflection-results` (POST, simpan hasil anonim) + `/api/reflection-stats` (GET, jumlah partisipan)
 - DB: MongoDB koleksi `reflection_results` (warmth/hostility/indifference/rejection/level/locale/timestamp)
 
+## Implemented (2026-09-22, iterasi 9)
+- Penyebaran QR: tombol "Sebarkan via WhatsApp" (wa.me dengan pesan siap kirim), "Salin Tautan", dan "Unduh Poster QR" — poster PNG 1080×1350 siap disebar ke grup keluarga/sekolah atau dicetak untuk layar acara
+- Dashboard: kartu "Target Responden" dengan pilihan target 30/50/100/200 (tersimpan), progress bar animasi, persentase, dan sisa menuju target — siap untuk laporan LIDM; kartu statistik kini selalu tampil walau data masih nol
+- Deploy: DIBLOKIR saldo — deploy pertama 50 ECU/bulan, saldo user 5 ECU; menunggu top-up/upgrade
+
+## Implemented (2026-09-22, iterasi 8)
+- Pembersihan data uji: 18 hasil tes, 5 cerita forum, 2 pesan narahubung, 2 janji temu buatan pengembang dihapus — dashboard validasi kini mulai dari nol, hanya berisi data pengguna asli (cache audio TTS & log rate-limit email dipertahankan, bukan data pengguna)
+
+## Implemented (2026-09-22, iterasi 7)
+- Laporan PDF Psikolog: GET /api/reflection-results/{rid}/report.pdf (reportlab) — format resmi A4: meta anonim, tingkat koneksi, tabel skor 4 dimensi + interpretasi, dimensi bermasalah, panduan interpretasi untuk psikolog (formula & ambang), disclaimer; tombol unduh di layar hasil
+- Janji Temu Konseling: formulir penjadwalan dari layar hasil (nama, kontak, tanggal, waktu, catatan), catatan urgensi otomatis saat level "Ruang Sunyi"; tersimpan dan tampil di /moderasi (section Janji Temu Konseling)
+
+## Implemented (2026-09-22, iterasi 6 — refokus: tes adalah inti, film hanya kampanye)
+- Hero ditulis ulang: "Setiap keluarga berhak punya ruang untuk bicara." — CTA utama tes, CTA sekunder manifesto; nav diurut ulang (Tes Refleksi pertama)
+- Urutan section: hero → TES → Dikelola Bersama Psikolog → manifesto → film (dibingkai "Materi Kampanye" + catatan bahwa inti platform adalah tes) → dst
+- Section baru "Dikelola Bersama Psikolog": 4 pilar tata kelola (berbasis IPARTheory, anonim & beretika, validasi berkelanjutan, rujukan profesional) + tautan dashboard & modul
+- Intro tes ditegaskan: chips 12 pertanyaan / ±3 menit / 100% anonim / bukan diagnosis + catatan persetujuan penyimpanan data agregat anonim
+- Manifesto bab 03 diubah: film = pintu kampanye, tes = jembatan perubahan
+
 ## Implemented (2026-09-22, iterasi 5)
 - Moderasi forum: kiriman baru berstatus pending (tidak tampil publik), tombol Laporkan per cerita (auto-sembunyi setelah 3 laporan), halaman admin /moderasi berkunci (X-Admin-Key) dengan antrean persetujuan Setujui/Tolak, daftar cerita dilaporkan, dan kotak masuk pesan narahubung
 - Narahubung & Bantuan: 3 hotline resmi (SEJIWA 119 ext. 8, Halo Kemenkes 1500-567, Into The Light Indonesia) + formulir pesan ke tim (tersimpan, tampil di /moderasi)

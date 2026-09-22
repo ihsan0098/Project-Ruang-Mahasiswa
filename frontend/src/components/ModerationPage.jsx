@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
-import { ArrowLeft, ShieldCheck, Check, X, Flag, Inbox, KeyRound } from "lucide-react";
+import { ArrowLeft, ShieldCheck, Check, X, Flag, Inbox, KeyRound, CalendarPlus } from "lucide-react";
 
 const EASE = [0.16, 1, 0.3, 1];
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -15,6 +15,7 @@ export const ModerationPage = ({ t }) => {
   const [error, setError] = useState(false);
   const [posts, setPosts] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [bookings, setBookings] = useState([]);
 
   const load = useCallback(async (k) => {
     try {
@@ -23,6 +24,7 @@ export const ModerationPage = ({ t }) => {
       });
       setPosts(r.data.posts || []);
       setMessages(r.data.messages || []);
+      setBookings(r.data.bookings || []);
       setAuthed(true);
       setError(false);
       localStorage.setItem(KEY_STORE, k);
@@ -212,6 +214,42 @@ export const ModerationPage = ({ t }) => {
                           </button>
                         </div>
                       )}
+                    </article>
+                  ))}
+                </div>
+              )}
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl text-stone-100 mb-6 flex items-center gap-3">
+                <CalendarPlus size={18} className="text-[#84A98C]" />
+                {t.mod.bookingsTitle}
+              </h2>
+              {bookings.length === 0 ? (
+                <p data-testid="mod-bookings-empty" className="text-sm font-light italic text-stone-500">
+                  {t.mod.emptyMsg}
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {bookings.map((b, i) => (
+                    <article
+                      key={b.bid}
+                      data-testid={`mod-booking-card-${i}`}
+                      className="rounded-2xl border border-[#84A98C]/25 bg-surface/60 p-6"
+                    >
+                      <div className="flex items-baseline justify-between gap-4 flex-wrap">
+                        <p className="font-serif text-lg text-amber-200/90">{b.name}</p>
+                        <p className="text-[10px] font-mono text-stone-500">{b.contact}</p>
+                      </div>
+                      <p className="mt-2 text-xs font-mono text-[#84A98C]">
+                        {b.date || "—"} · {b.time || "—"}
+                      </p>
+                      {b.note && (
+                        <p className="mt-3 text-sm font-light text-stone-300 leading-relaxed">{b.note}</p>
+                      )}
+                      <p className="mt-3 text-[10px] font-mono text-stone-600">
+                        {new Date(b.timestamp).toLocaleString("id-ID")} · ref {String(b.rid || "").slice(0, 8) || "—"}
+                      </p>
                     </article>
                   ))}
                 </div>
