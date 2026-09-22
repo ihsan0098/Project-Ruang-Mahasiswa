@@ -210,6 +210,13 @@ export const extra = {
       loading: "Menyiapkan suara\u2026",
     },
     dashByDayTitle: "Tes per Hari · 7 Hari Terakhir",
+    dashTarget: {
+      title: "Target Responden",
+      note: "untuk sampel validasi psikometri LIDM",
+      of: "dari",
+      remaining: (n) => `${n} responden lagi menuju target`,
+      reached: "Target tercapai — sampel validasi terpenuhi!",
+    },
     report: {
       download: "Unduh Laporan PDF",
       note: "Format resmi siap dianalisis psikolog dalam sesi konseling",
@@ -442,6 +449,13 @@ export const extra = {
       loading: "Preparing voice\u2026",
     },
     dashByDayTitle: "Tests per Day · Last 7 Days",
+    dashTarget: {
+      title: "Respondent Target",
+      note: "for the LIDM psychometric validation sample",
+      of: "of",
+      remaining: (n) => `${n} more respondents to target`,
+      reached: "Target reached — validation sample fulfilled!",
+    },
     report: {
       download: "Download PDF Report",
       note: "Official format, ready for a psychologist to analyze in a counseling session",

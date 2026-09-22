@@ -265,6 +265,11 @@ export const content = {
       title: "Pindai. Mulai percakapannya.",
       desc: "Tampilkan kode ini di layar saat pemutaran film atau presentasi — penonton dapat langsung memindainya dan mengikuti Tes Refleksi dari ponsel mereka, saat itu juga.",
       hint: "Mengarah ke halaman ini, langsung ke bagian tes",
+      shareWA: "Sebarkan via WhatsApp",
+      downloadPoster: "Unduh Poster QR",
+      copyLink: "Salin Tautan",
+      copied: "Tersalin!",
+      shareText: "Yuk berefleksi bareng! Tes Refleksi Ruang — 12 pertanyaan jujur untuk orang tua & anak laki-laki. Anonim, cuma 3 menit:",
     },
     tree: {
       overline: "Instalasi Pohon Dialog",
@@ -530,6 +535,11 @@ export const content = {
       title: "Scan. Start the conversation.",
       desc: "Show this code on screen during a screening or presentation — the audience can scan it instantly and take the Reflection Test from their phones, right then and there.",
       hint: "Points to this page, straight to the test",
+      shareWA: "Share via WhatsApp",
+      downloadPoster: "Download QR Poster",
+      copyLink: "Copy Link",
+      copied: "Copied!",
+      shareText: "Let's reflect together! The Ruang Reflection Test — 12 honest questions for parents & sons. Anonymous, just 3 minutes:",
     },
     tree: {
       overline: "The Dialogue Tree Installation",

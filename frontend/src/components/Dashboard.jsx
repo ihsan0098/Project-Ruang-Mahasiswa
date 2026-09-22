@@ -21,6 +21,12 @@ const LEVEL_COLORS = { warm: "#84A98C", fading: "#F59E0B", silent: "#EF4444" };
 export const Dashboard = ({ t, lang, onToggleLang }) => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [target, setTargetState] = useState(() => Number(localStorage.getItem("ruang-dash-target")) || 50);
+
+  const setTarget = (v) => {
+    setTargetState(v);
+    localStorage.setItem("ruang-dash-target", String(v));
+  };
 
   const load = useCallback(() => {
     setLoading(true);
@@ -97,7 +103,7 @@ export const Dashboard = ({ t, lang, onToggleLang }) => {
           </p>
         )}
 
-        {stats && stats.count > 0 && (
+        {stats && (
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -122,6 +128,52 @@ export const Dashboard = ({ t, lang, onToggleLang }) => {
                   </p>
                 </div>
               ))}
+            </div>
+
+            <div data-testid="dash-target-card" className="rounded-2xl border border-stone-800 bg-surface/60 p-8">
+              <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div>
+                  <h2 className="font-serif text-2xl text-stone-100">{t.dashTarget.title}</h2>
+                  <p className="text-xs font-mono uppercase tracking-[0.15em] text-stone-500 mt-1.5">
+                    {t.dashTarget.note}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  {[30, 50, 100, 200].map((v) => (
+                    <button
+                      key={v}
+                      data-testid={`dash-target-${v}`}
+                      onClick={() => setTarget(v)}
+                      className={`px-4 py-1.5 rounded-full text-xs font-mono border transition-[background-color,border-color,color] duration-300 ${
+                        target === v
+                          ? "bg-amber-500 border-amber-500 text-stone-950"
+                          : "border-stone-700 text-stone-400 hover:border-amber-500/50 hover:text-amber-300"
+                      }`}
+                    >
+                      {v}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex items-baseline gap-3 mb-3">
+                <p className="font-serif text-4xl font-semibold text-stone-100">{stats.count}</p>
+                <p className="text-sm font-mono text-stone-500">
+                  {t.dashTarget.of} {target} · {Math.min(100, Math.round((stats.count / target) * 100))}%
+                </p>
+              </div>
+              <div className="h-2 rounded-full bg-stone-800 overflow-hidden">
+                <motion.div
+                  className="h-full rounded-full bg-amber-500"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min(100, (stats.count / target) * 100)}%` }}
+                  transition={{ duration: 1, ease: EASE }}
+                />
+              </div>
+              <p data-testid="dash-target-status" className={`mt-3 text-xs font-mono ${stats.count >= target ? "text-[#84A98C]" : "text-stone-500"}`}>
+                {stats.count >= target
+                  ? t.dashTarget.reached
+                  : t.dashTarget.remaining(target - stats.count)}
+              </p>
             </div>
 
             <div data-testid="dash-levels-card" className="rounded-2xl border border-stone-800 bg-surface/60 p-8">

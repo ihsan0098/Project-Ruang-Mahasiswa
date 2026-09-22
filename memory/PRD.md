@@ -22,6 +22,11 @@ Sumber data: Proposal LIDM 2026 Divisi Video Digital Pendidikan (Project Ruang) 
 - Backend: FastAPI `/api/reflection-results` (POST, simpan hasil anonim) + `/api/reflection-stats` (GET, jumlah partisipan)
 - DB: MongoDB koleksi `reflection_results` (warmth/hostility/indifference/rejection/level/locale/timestamp)
 
+## Implemented (2026-09-22, iterasi 9)
+- Penyebaran QR: tombol "Sebarkan via WhatsApp" (wa.me dengan pesan siap kirim), "Salin Tautan", dan "Unduh Poster QR" — poster PNG 1080×1350 siap disebar ke grup keluarga/sekolah atau dicetak untuk layar acara
+- Dashboard: kartu "Target Responden" dengan pilihan target 30/50/100/200 (tersimpan), progress bar animasi, persentase, dan sisa menuju target — siap untuk laporan LIDM; kartu statistik kini selalu tampil walau data masih nol
+- Deploy: DIBLOKIR saldo — deploy pertama 50 ECU/bulan, saldo user 5 ECU; menunggu top-up/upgrade
+
 ## Implemented (2026-09-22, iterasi 8)
 - Pembersihan data uji: 18 hasil tes, 5 cerita forum, 2 pesan narahubung, 2 janji temu buatan pengembang dihapus — dashboard validasi kini mulai dari nol, hanya berisi data pengguna asli (cache audio TTS & log rate-limit email dipertahankan, bukan data pengguna)
 
